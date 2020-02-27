@@ -245,6 +245,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					afterSingletonCreation(beanName);
 				}
 				if (newSingleton) {
+					// 5. 如果是新创建的 Bean ，将它添加到缓存  singletonObjects 中
+					//		ioc 容器就是这些 Map 保存了但实例Bean, 环境信息 。。。
 					addSingleton(beanName, singletonObject);
 				}
 			}

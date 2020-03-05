@@ -588,6 +588,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Eagerly cache singletons to be able to resolve circular references
 		// even when triggered by lifecycle interfaces like BeanFactoryAware.
+		// 判断是否支持循环依赖，默认支持单例循环依赖可以设置关闭
 		boolean earlySingletonExposure = (mbd.isSingleton() && this.allowCircularReferences &&
 				isSingletonCurrentlyInCreation(beanName));
 		if (earlySingletonExposure) {
@@ -1788,7 +1789,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		Object wrappedBean = bean;
 		if (mbd == null || !mbd.isSynthetic()) {
-			// 2. 【执行后置心初六去初始化方法之前】applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
+			// 2. 【执行后置处理器的初始化方法之前】applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 			//		BeanPostProcessor.postProcessBeforeInitialization(result, beanName);
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}

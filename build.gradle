@@ -147,12 +147,16 @@ configure(allprojects) { project ->
 	}
 
 	repositories {
+		//添加国内镜像
+		//see https://blog.csdn.net/qq_33589510/article/details/106963762
+		maven{ url'http://maven.aliyun.com/nexus/content/groups/public/'}
 		maven { url "https://repo.spring.io/libs-release" }
 		mavenLocal()
 	}
 
 	dependencies {
 		testCompile("junit:junit:4.12") {
+
 			exclude group: "org.hamcrest", module: "hamcrest-core"
 		}
 		testCompile("org.mockito:mockito-core:2.28.2") {

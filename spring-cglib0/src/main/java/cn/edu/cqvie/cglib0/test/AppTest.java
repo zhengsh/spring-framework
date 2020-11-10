@@ -13,7 +13,7 @@ public class AppTest {
 		XService bean = ac.getBean(XService.class);
 
 		System.out.println(bean);
-		System.out.println(bean.getyService());
+		//System.out.println(bean.getyService());
 	}
 }
 @ComponentScan("cn.edu.cqvie.cglib0.service")

@@ -16,19 +16,21 @@ import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROT
 @Service
 public class YService implements ApplicationContextAware {
 
-	@Autowired
-	private XService xService;
+    //    @Autowired
+//    private XService xService;
+    public YService() {
+    }
 
-	public YService() {
-		System.out.println(this);
-		System.out.println(" -------> y create");
-	}
+    public YService(@Autowired XService xService) {
+        System.out.println(this);
+        System.out.println(" -------> y create");
+    }
 
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		System.out.println("Aware");
-	}
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        System.out.println("Aware");
+    }
 
 //	@PostConstruct
 //	public void lifeInit() {

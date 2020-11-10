@@ -11,19 +11,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class XService {
 
-	@Autowired
-	private YService yService;
+//	@Autowired
+//	private YService yService;
 
 	public XService() {
-		System.out.println(" -------> x create");
-		System.out.println(this);
 	}
 
-	public YService getyService() {
-		return yService;
-	}
+    public XService(@Autowired YService yService) {
+        System.out.println(" -------> x create");
+        System.out.println(this);
+    }
 
-	public void setyService(YService yService) {
-		this.yService = yService;
-	}
+//	public YService getyService() {
+//		return yService;
+//	}
+//
+//	public void setyService(YService yService) {
+//		this.yService = yService;
+//	}
 }

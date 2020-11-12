@@ -89,7 +89,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 		// 1. 调用无参的构造方法，初始化一个读取器和扫描器
 		// 2. 调用父类的构造方法，创建 BeanFactory 对象
      	this();
-		// this.reader.register(componentClasses);
+		//this.reader.register(componentClasses);
 		register(componentClasses);
 		// 容器的创建以及刷新工作
 		refresh();

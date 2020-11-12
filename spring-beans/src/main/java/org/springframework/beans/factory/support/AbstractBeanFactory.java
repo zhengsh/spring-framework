@@ -257,6 +257,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					logger.trace("Returning cached instance of singleton bean '" + beanName + "'");
 				}
 			}
+			// 判断 sharedInstance 是不是 FactoryBean
 			bean = getObjectForBeanInstance(sharedInstance, name, beanName, null);
 		}
 		// Bean 不存在
@@ -290,6 +291,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 			}
 
+			// 下面开始创建 bean
 			if (!typeCheckOnly) {
 				// 4. 标记当前 Bean 已经被创建
 				markBeanAsCreated(beanName);
@@ -302,9 +304,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 				// Guarantee initialization of beans that the current bean depends on.
 				// 6. 获取Bean依赖的其他的 Bean ；如果有按照 getBean() 把依赖的Bean先创建
+				// DependsOn 这里是判断是否有依赖， 如果设置了 @DependsOn 应该先创建依赖
 				String[] dependsOn = mbd.getDependsOn();
 				if (dependsOn != null) {
 					for (String dep : dependsOn) {
+						// 判断 beanName 是不是也被 dep 依赖了，如果是，那就存在互相依赖
 						if (isDependent(beanName, dep)) {
 							throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 									"Circular depends-on relationship between '" + beanName + "' and '" + dep + "'");
@@ -1266,10 +1270,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			if (containingBd == null) {
 				mbd = this.mergedBeanDefinitions.get(beanName);
 			}
-
 			if (mbd == null) {
+				// 如果 bd 的父类 bd 为空
 				if (bd.getParentName() == null) {
 					// Use copy of given root bean definition.
+					// RootBeanDefinition 没有父 BeanDefinition
 					if (bd instanceof RootBeanDefinition) {
 						mbd = ((RootBeanDefinition) bd).cloneBeanDefinition();
 					}
@@ -1302,6 +1307,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 								"Could not resolve parent bean definition '" + bd.getParentName() + "'", ex);
 					}
 					// Deep copy with overridden values.
+					// pbd 表示父 BeanDefinition， bd 表示当前 BeanDefinition
 					mbd = new RootBeanDefinition(pbd);
 					mbd.overrideFrom(bd);
 				}

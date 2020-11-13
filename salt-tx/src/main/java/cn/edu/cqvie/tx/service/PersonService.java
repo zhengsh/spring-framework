@@ -31,7 +31,7 @@ public class PersonService {
 	/**
 	 * 事务测试
 	 */
-	@Transactional(rollbackFor = RuntimeException.class)
+	//@Transactional(rollbackFor = RuntimeException.class)
 	public void test() {
 		System.out.println("test method invoke start");
 		Person person = new Person();
@@ -53,20 +53,35 @@ public class PersonService {
 		});
 
 		person.setUsername("WanKen");
-		personService.insert(person);
+		personService.insert1(person);
 		System.out.println("test method invoke end");
-
-
 	}
 
 	/**
 	 * 用户信息插入
-	 *
+	 * 测试2. 如果方法被 private 修饰那么这里不会被代理，执行的时候 personMapper 就是一个 null
+	 * wen
+	 * @param person 用户信息
+	 */
+	//@Transactional(propagation = Propagation.NEVER, rollbackFor = RuntimeException.class)
+	private void insert1(Person person) {
+		System.out.println("insert method invoke start exec sql");
+		System.out.println("private method " + this);
+		personMapper.insert(person);
+		System.out.println("insert method invoke end exec sql");
+		int s = 0;
+		//int a = 100 / s;
+	}
+
+	/**
+	 * 用户信息插入
+	 * 测试2. 如果方法被 private 修饰那么这里不会被代理，执行的时候 personMapper 就是一个 null
 	 * @param person 用户信息
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = RuntimeException.class)
 	public void insert(Person person) {
 		System.out.println("insert method invoke start exec sql");
+		System.out.println("private method " + this);
 		personMapper.insert(person);
 		System.out.println("insert method invoke end exec sql");
 		int s = 0;

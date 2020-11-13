@@ -25,3 +25,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
 }
+
+//关闭测试任务
+check.dependsOn.remove(test)

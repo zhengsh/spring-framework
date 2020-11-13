@@ -460,6 +460,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 			@Nullable TransactionAttribute txAttr, final String joinpointIdentification) {
 
 		// If no name specified, apply method identification as transaction name.
+		// 事务名称
 		if (txAttr != null && txAttr.getName() == null) {
 			txAttr = new DelegatingTransactionAttribute(txAttr) {
 				@Override
@@ -468,7 +469,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				}
 			};
 		}
-
+		// 事务对象状态
 		TransactionStatus status = null;
 		if (txAttr != null) {
 			if (tm != null) {

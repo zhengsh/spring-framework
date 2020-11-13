@@ -41,9 +41,11 @@ public class ProxyTransactionManagementConfiguration extends AbstractTransaction
 	@Bean(name = TransactionManagementConfigUtils.TRANSACTION_ADVISOR_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public BeanFactoryTransactionAttributeSourceAdvisor transactionAdvisor() {
+
 		BeanFactoryTransactionAttributeSourceAdvisor advisor = new BeanFactoryTransactionAttributeSourceAdvisor();
-		advisor.setTransactionAttributeSource(transactionAttributeSource());
-		advisor.setAdvice(transactionInterceptor());
+		advisor.setTransactionAttributeSource(transactionAttributeSource()); //表示切入点
+		advisor.setAdvice(transactionInterceptor()); //表示的代理逻辑
+
 		if (this.enableTx != null) {
 			advisor.setOrder(this.enableTx.<Integer>getNumber("order"));
 		}

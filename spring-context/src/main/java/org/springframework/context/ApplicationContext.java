@@ -54,6 +54,11 @@ import org.springframework.lang.Nullable;
  * @see ConfigurableApplicationContext
  * @see org.springframework.beans.factory.BeanFactory
  * @see org.springframework.core.io.ResourceLoader
+ *
+ * EnvironmentCapable 表示可以获取的当前环境信息
+ * MessageSource 表示可以用于国际化
+ * ApplicationEventPublisher 表示拥有事件发布功能
+ * ResourcePatternResolver 表示拥有资源文件功能
  */
 public interface ApplicationContext extends EnvironmentCapable, ListableBeanFactory, HierarchicalBeanFactory,
 		MessageSource, ApplicationEventPublisher, ResourcePatternResolver {

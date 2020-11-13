@@ -376,9 +376,16 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			try {
 				// 
 				boolean newSynchronization = (getTransactionSynchronization() != SYNCHRONIZATION_NEVER);
+
+				// 事务对象中包括：
+				// 1.事务的定义
+				// 2.事务对象
+				// 3.是否是新事务
 				DefaultTransactionStatus status = newTransactionStatus(
 						definition, transaction, true, newSynchronization, debugEnabled, suspendedResources);
+				// 开启新事务，获取新的连接对象
 				doBegin(transaction, definition);
+				// 初始化 TransactionSynchronizationManager 中的属性
 				prepareSynchronization(status, definition);
 				return status;
 			}

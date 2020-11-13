@@ -257,6 +257,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					logger.trace("Returning cached instance of singleton bean '" + beanName + "'");
 				}
 			}
+			// 判断 sharedInstance 是不是 FactoryBean
 			bean = getObjectForBeanInstance(sharedInstance, name, beanName, null);
 		}
 		// Bean 不存在
@@ -290,6 +291,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 			}
 
+			// 下面开始创建 bean
 			if (!typeCheckOnly) {
 				// 4. 标记当前 Bean 已经被创建
 				markBeanAsCreated(beanName);
@@ -302,15 +304,21 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 				// Guarantee initialization of beans that the current bean depends on.
 				// 6. 获取Bean依赖的其他的 Bean ；如果有按照 getBean() 把依赖的Bean先创建
+				// DependsOn 这里是判断是否有依赖， 如果设置了 @DependsOn 应该先创建依赖
 				String[] dependsOn = mbd.getDependsOn();
 				if (dependsOn != null) {
 					for (String dep : dependsOn) {
+						// 判断 beanName 是不是也被 dep 依赖了，如果是，那就存在互相依赖
 						if (isDependent(beanName, dep)) {
 							throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 									"Circular depends-on relationship between '" + beanName + "' and '" + dep + "'");
 						}
+						// 存在两个 map 中
+						// 1. dependentBeanMap key 为 dep , value 是一个 LinkedHashSet. 表示 dep 被那些 bean 依赖了。
+						// 2. dependenciesForBeanMap key 是 beanName, value 是一个 LinkedHashSet ,  表示 beanName 依赖
 						registerDependentBean(dep, beanName);
 						try {
+							// 先去生成所依赖的 Bean
 							getBean(dep);
 						}
 						catch (NoSuchBeanDefinitionException ex) {
@@ -324,6 +332,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				// 7. 启动单实例Bean的创建过程
 				//		1）、createBean(String beanName, RootBeanDefinition mbd, @Nullable Object[] args)
 				//		2）、Object bean = resolveBeforeInstantiation(beanName, mbdToUse); 让BeanPostProcessor 先拦截返回代理对象
+				// 单例模式
 				if (mbd.isSingleton()) {
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
@@ -354,7 +363,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 
 				else {
-					String scopeName = mbd.getScope();
+					String scopeName = mbd.getScope();// 获取作用域: request、session
 					final Scope scope = this.scopes.get(scopeName);
 					if (scope == null) {
 						throw new IllegalStateException("No Scope registered for scope name '" + scopeName + "'");
@@ -1266,10 +1275,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			if (containingBd == null) {
 				mbd = this.mergedBeanDefinitions.get(beanName);
 			}
-
 			if (mbd == null) {
+				// 如果 bd 的父类 bd 为空
 				if (bd.getParentName() == null) {
 					// Use copy of given root bean definition.
+					// RootBeanDefinition 没有父 BeanDefinition
 					if (bd instanceof RootBeanDefinition) {
 						mbd = ((RootBeanDefinition) bd).cloneBeanDefinition();
 					}
@@ -1302,6 +1312,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 								"Could not resolve parent bean definition '" + bd.getParentName() + "'", ex);
 					}
 					// Deep copy with overridden values.
+					// pbd 表示父 BeanDefinition， bd 表示当前 BeanDefinition
 					mbd = new RootBeanDefinition(pbd);
 					mbd.overrideFrom(bd);
 				}

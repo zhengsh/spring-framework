@@ -14,7 +14,17 @@ repositories {
 dependencies {
     compile(project(":spring-core"))
     compile(project(":spring-context"))
-    compile(project(":spring-aop"))
-    compile(project(":spring-aspects"))
+    compile(project(":spring-jdbc"))
+
+    compile "org.mybatis:mybatis:$mybatisVersion"
+    compile "org.mybatis:mybatis-spring:$mybatisSpring"
+    compile "commons-dbcp:commons-dbcp:$commonsDbcp"
+    compile "mysql:mysql-connector-java:$mysqlJava"
+
+    testCompile(project(":spring-test"))
+    testCompile 'junit:junit:4.12'
+
 }
 
+//关闭测试任务
+check.dependsOn.remove(test)

@@ -28,7 +28,8 @@ public class DataSourceConfig {
 		dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 		dataSource.setUrl("jdbc:mysql://127.0.0.1:3306/slat-tx?useSSL=false&characterEncoding=UTF-8&useUnicode=true&serverTimezone=Asia/Shanghai");
 		dataSource.setUsername("root");
-		dataSource.setPassword("zhh359#");
+		//dataSource.setPassword("zhh359#");
+		dataSource.setPassword("root123");
 		dataSource.setInitialSize(5);
 		dataSource.setMaxActive(10);
 		return dataSource;

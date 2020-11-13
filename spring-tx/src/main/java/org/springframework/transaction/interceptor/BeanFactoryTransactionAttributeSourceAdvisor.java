@@ -37,13 +37,9 @@ public class BeanFactoryTransactionAttributeSourceAdvisor extends AbstractBeanFa
 	@Nullable
 	private TransactionAttributeSource transactionAttributeSource;
 
-<<<<<<< HEAD
-	// 构造了一个 PointCut ，
-=======
 	// 构造了一个 Pointcut, TransactionAttributeSource 的实现对象为 AnnotationTransactionAttributeSource
 	// 在 Pointcut 匹配类时， 会利用 AnnotationTransactionAttributeSource 去检查类上是否有 @Transaction 注解
 	// 在 Pointcut 匹配方法时， 会利用 AnnotationTransactionAttributeSource 去检查方法上是否有 @Transaction 注解
->>>>>>> 0bc54e449b7c4672cbc52d92b8850c8a352d7418
 	private final TransactionAttributeSourcePointcut pointcut = new TransactionAttributeSourcePointcut() {
 		@Override
 		@Nullable

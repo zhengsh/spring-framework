@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2018 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -375,7 +375,7 @@ public class RequestResponseBodyMethodProcessorTests {
 				Collections.singletonList(new StringHttpMessageConverter()),
 				factory.getObject());
 
-		assertContentDisposition(processor, false, "/hello.json", "whitelisted extension");
+		assertContentDisposition(processor, false, "/hello.json", "safe extension");
 		assertContentDisposition(processor, false, "/hello.pdf", "registered extension");
 		assertContentDisposition(processor, true, "/hello.dataless", "unknown extension");
 
@@ -383,7 +383,8 @@ public class RequestResponseBodyMethodProcessorTests {
 		assertContentDisposition(processor, false, "/hello.json;a=b", "path param shouldn't cause issue");
 		assertContentDisposition(processor, true, "/hello.json;a=b;setup.dataless", "unknown ext in path params");
 		assertContentDisposition(processor, true, "/hello.dataless;a=b;setup.json", "unknown ext in filename");
-		assertContentDisposition(processor, false, "/hello.json;a=b;setup.json", "whitelisted extensions");
+		assertContentDisposition(processor, false, "/hello.json;a=b;setup.json", "safe extensions");
+		assertContentDisposition(processor, true, "/hello.json;jsessionid=foo.bar", "jsessionid shouldn't cause issue");
 
 		// encoded dot
 		assertContentDisposition(processor, true, "/hello%2Edataless;a=b;setup.json", "encoded dot in filename");
@@ -703,6 +704,27 @@ public class RequestResponseBodyMethodProcessorTests {
 
 		RequestResponseBodyMethodProcessor processor = new RequestResponseBodyMethodProcessor(converters);
 
+		assertTrue(processor.supportsParameter(methodParameter));
+		String value = (String) processor.readWithMessageConverters(
+				this.request, methodParameter, methodParameter.getGenericParameterType());
+		assertEquals("foo", value);
+	}
+
+	@Test  // gh-24127
+	public void resolveArgumentTypeVariableWithGenericInterfaceAndSubclass() throws Exception {
+		this.servletRequest.setContent("\"foo\"".getBytes("UTF-8"));
+		this.servletRequest.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+
+		Method method = SubControllerImplementingInterface.class.getMethod("handle", Object.class);
+		HandlerMethod handlerMethod = new HandlerMethod(new SubControllerImplementingInterface(), method);
+		MethodParameter methodParameter = handlerMethod.getMethodParameters()[0];
+
+		List<HttpMessageConverter<?>> converters = new ArrayList<>();
+		converters.add(new MappingJackson2HttpMessageConverter());
+
+		RequestResponseBodyMethodProcessor processor = new RequestResponseBodyMethodProcessor(converters);
+
+		assertTrue(processor.supportsParameter(methodParameter));
 		String value = (String) processor.readWithMessageConverters(
 				this.request, methodParameter, methodParameter.getGenericParameterType());
 		assertEquals("foo", value);
@@ -1053,6 +1075,15 @@ public class RequestResponseBodyMethodProcessorTests {
 
 
 	static class MyControllerImplementingInterface implements MappingInterface<String> {
+	}
+
+
+	static class SubControllerImplementingInterface extends MyControllerImplementingInterface {
+
+		@Override
+		public String handle(String arg) {
+			return arg;
+		}
 	}
 
 }

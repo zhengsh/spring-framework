@@ -18,6 +18,7 @@ package org.springframework.http.converter.json;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,8 +43,14 @@ import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Jackson 2.x converter tests.
@@ -63,12 +70,18 @@ public class MappingJackson2HttpMessageConverterTests {
 	public void canRead() {
 		assertTrue(converter.canRead(MyBean.class, new MediaType("application", "json")));
 		assertTrue(converter.canRead(Map.class, new MediaType("application", "json")));
+		assertTrue(converter.canRead(MyBean.class, new MediaType("application", "json", StandardCharsets.UTF_8)));
+		assertTrue(converter.canRead(MyBean.class, new MediaType("application", "json", StandardCharsets.US_ASCII)));
+		assertTrue(converter.canRead(MyBean.class, new MediaType("application", "json", StandardCharsets.ISO_8859_1)));
 	}
 
 	@Test
 	public void canWrite() {
 		assertTrue(converter.canWrite(MyBean.class, new MediaType("application", "json")));
 		assertTrue(converter.canWrite(Map.class, new MediaType("application", "json")));
+		assertTrue(converter.canWrite(MyBean.class, new MediaType("application", "json", StandardCharsets.UTF_8)));
+		assertTrue(converter.canWrite(MyBean.class, new MediaType("application", "json", StandardCharsets.US_ASCII)));
+		assertFalse(converter.canWrite(MyBean.class, new MediaType("application", "json", StandardCharsets.ISO_8859_1)));
 	}
 
 	@Test  // SPR-7905
@@ -435,7 +448,7 @@ public class MappingJackson2HttpMessageConverterTests {
 	@Test
 	public void readWithNoDefaultConstructor() throws Exception {
 		String body = "{\"property1\":\"foo\",\"property2\":\"bar\"}";
-		MockHttpInputMessage inputMessage = new MockHttpInputMessage(body.getBytes("UTF-8"));
+		MockHttpInputMessage inputMessage = new MockHttpInputMessage(body.getBytes(StandardCharsets.UTF_8));
 		inputMessage.getHeaders().setContentType(new MediaType("application", "json"));
 		try {
 			converter.read(BeanWithNoDefaultConstructor.class, inputMessage);
@@ -445,6 +458,47 @@ public class MappingJackson2HttpMessageConverterTests {
 			return;
 		}
 		fail();
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void readNonUnicode() throws Exception {
+		String body = "{\"føø\":\"bår\"}";
+		Charset charset = StandardCharsets.ISO_8859_1;
+		MockHttpInputMessage inputMessage = new MockHttpInputMessage(body.getBytes(charset));
+		inputMessage.getHeaders().setContentType(new MediaType("application", "json", charset));
+		HashMap<String, Object> result = (HashMap<String, Object>) this.converter.read(HashMap.class, inputMessage);
+
+		assertEquals(1, result.size());
+		assertEquals("bår", result.get("føø"));
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void readAscii() throws Exception {
+		String body = "{\"foo\":\"bar\"}";
+		Charset charset = StandardCharsets.US_ASCII;
+		MockHttpInputMessage inputMessage = new MockHttpInputMessage(body.getBytes(charset));
+		inputMessage.getHeaders().setContentType(new MediaType("application", "json", charset));
+		HashMap<String, Object> result = (HashMap<String, Object>) this.converter.read(HashMap.class, inputMessage);
+
+		assertEquals(1, result.size());
+		assertEquals("bar", result.get("foo"));
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void writeAscii() throws Exception {
+		MockHttpOutputMessage outputMessage = new MockHttpOutputMessage();
+		Map<String,Object> body = new HashMap<>();
+		body.put("foo", "bar");
+		Charset charset = StandardCharsets.US_ASCII;
+		MediaType contentType = new MediaType("application", "json", charset);
+		converter.write(body, contentType, outputMessage);
+
+		String result = outputMessage.getBodyAsString(charset);
+		assertEquals("{\"foo\":\"bar\"}", result);
+		assertEquals(contentType, outputMessage.getHeaders().getContentType());
 	}
 
 

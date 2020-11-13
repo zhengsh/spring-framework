@@ -66,6 +66,7 @@ public class Jackson2SmileDecoderTests extends AbstractDecoderTestCase<Jackson2S
 		assertFalse(decoder.canDecode(forClass(Pojo.class), APPLICATION_JSON));
 	}
 
+
 	@Override
 	public void decode() {
 		Flux<DataBuffer> input = Flux.just(this.pojo1, this.pojo2)

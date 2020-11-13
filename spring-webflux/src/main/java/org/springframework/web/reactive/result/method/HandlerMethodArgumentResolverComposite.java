@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2018 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import reactor.core.publisher.Mono;
 
 import org.springframework.core.MethodParameter;
@@ -40,8 +38,6 @@ import org.springframework.web.server.ServerWebExchange;
  * @since 5.1.3
  */
 class HandlerMethodArgumentResolverComposite implements HandlerMethodArgumentResolver {
-
-	protected final Log logger = LogFactory.getLog(getClass());
 
 	private final List<HandlerMethodArgumentResolver> argumentResolvers = new LinkedList<>();
 
@@ -116,9 +112,8 @@ class HandlerMethodArgumentResolverComposite implements HandlerMethodArgumentRes
 
 		HandlerMethodArgumentResolver resolver = getArgumentResolver(parameter);
 		if (resolver == null) {
-			throw new IllegalArgumentException(
-					"Unsupported parameter type [" + parameter.getParameterType().getName() + "]." +
-							" supportsParameter should be called first.");
+			throw new IllegalArgumentException("Unsupported parameter type [" +
+					parameter.getParameterType().getName() + "]. supportsParameter should be called first.");
 		}
 		return resolver.resolveArgument(parameter, bindingContext, exchange);
 	}

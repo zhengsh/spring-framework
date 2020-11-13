@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2018 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,11 @@ import org.springframework.messaging.Message;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test fixture for {@link NativeMessageHeaderAccessor}.
@@ -148,7 +152,7 @@ public class NativeMessageHeaderAccessorTests {
 		NativeMessageHeaderAccessor headerAccessor = new NativeMessageHeaderAccessor();
 		headerAccessor.setNativeHeader("foo", "baz");
 
-		assertEquals(Arrays.asList("baz"), headerAccessor.getNativeHeader("foo"));
+		assertEquals(Collections.singletonList("baz"), headerAccessor.getNativeHeader("foo"));
 	}
 
 	@Test
@@ -190,7 +194,7 @@ public class NativeMessageHeaderAccessorTests {
 		NativeMessageHeaderAccessor headers = new NativeMessageHeaderAccessor(nativeHeaders);
 		headers.addNativeHeader("foo", null);
 
-		assertEquals(Arrays.asList("bar"), headers.getNativeHeader("foo"));
+		assertEquals(Collections.singletonList("bar"), headers.getNativeHeader("foo"));
 	}
 
 	@Test
@@ -198,7 +202,7 @@ public class NativeMessageHeaderAccessorTests {
 		NativeMessageHeaderAccessor headerAccessor = new NativeMessageHeaderAccessor();
 		headerAccessor.addNativeHeader("foo", "bar");
 
-		assertEquals(Arrays.asList("bar"), headerAccessor.getNativeHeader("foo"));
+		assertEquals(Collections.singletonList("bar"), headerAccessor.getNativeHeader("foo"));
 	}
 
 	@Test
@@ -227,6 +231,23 @@ public class NativeMessageHeaderAccessorTests {
 		headerAccessor.addNativeHeader("foo", "bar");
 		headerAccessor.setImmutable();
 		headerAccessor.setImmutable();
+	}
+
+	@Test // gh-25821
+	public void copyImmutableToMutable() {
+		NativeMessageHeaderAccessor source = new NativeMessageHeaderAccessor();
+		source.addNativeHeader("foo", "bar");
+		Message<String> message = MessageBuilder.createMessage("payload", source.getMessageHeaders());
+
+		NativeMessageHeaderAccessor target = new NativeMessageHeaderAccessor();
+		target.copyHeaders(message.getHeaders());
+		target.setLeaveMutable(true);
+		message = MessageBuilder.createMessage(message.getPayload(), target.getMessageHeaders());
+
+		MessageHeaderAccessor accessor = MessageHeaderAccessor.getMutableAccessor(message);
+		assertTrue(accessor.isMutable());
+		((NativeMessageHeaderAccessor) accessor).addNativeHeader("foo", "baz");
+		assertEquals(Arrays.asList("bar", "baz"), ((NativeMessageHeaderAccessor) accessor).getNativeHeader("foo"));
 	}
 
 }

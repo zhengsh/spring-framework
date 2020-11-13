@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2019 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,7 +117,7 @@ public class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V>, Serializa
 
 	@Override
 	public Map<K, V> toSingleValueMap() {
-		LinkedHashMap<K, V> singleValueMap = new LinkedHashMap<>(this.targetMap.size());
+		Map<K, V> singleValueMap = new LinkedHashMap<>(this.targetMap.size());
 		this.targetMap.forEach((key, values) -> {
 			if (values != null && !values.isEmpty()) {
 				singleValueMap.put(key, values.get(0));
@@ -192,6 +192,21 @@ public class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V>, Serializa
 		return this.targetMap.entrySet();
 	}
 
+	@Override
+	public boolean equals(@Nullable Object other) {
+		return (this == other || this.targetMap.equals(other));
+	}
+
+	@Override
+	public int hashCode() {
+		return this.targetMap.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return this.targetMap.toString();
+	}
+
 
 	/**
 	 * Create a deep copy of this Map.
@@ -203,8 +218,8 @@ public class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V>, Serializa
 	 * @see #clone()
 	 */
 	public LinkedMultiValueMap<K, V> deepCopy() {
-		LinkedMultiValueMap<K, V> copy = new LinkedMultiValueMap<>(this.targetMap.size());
-		this.targetMap.forEach((key, value) -> copy.put(key, new LinkedList<>(value)));
+		LinkedMultiValueMap<K, V> copy = new LinkedMultiValueMap<>(size());
+		forEach((key, values) -> copy.put(key, new LinkedList<>(values)));
 		return copy;
 	}
 
@@ -222,21 +237,6 @@ public class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V>, Serializa
 	@Override
 	public LinkedMultiValueMap<K, V> clone() {
 		return new LinkedMultiValueMap<>(this);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		return this.targetMap.equals(obj);
-	}
-
-	@Override
-	public int hashCode() {
-		return this.targetMap.hashCode();
-	}
-
-	@Override
-	public String toString() {
-		return this.targetMap.toString();
 	}
 
 }

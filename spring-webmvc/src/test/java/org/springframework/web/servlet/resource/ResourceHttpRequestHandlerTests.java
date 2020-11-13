@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -110,7 +111,6 @@ public class ResourceHttpRequestHandlerTests {
 		assertEquals(resourceLastModified("test/foo.css") / 1000, this.response.getDateHeader("Last-Modified") / 1000);
 		assertEquals("bytes", this.response.getHeader("Accept-Ranges"));
 		assertEquals(1, this.response.getHeaders("Accept-Ranges").size());
-		assertEquals(0, this.response.getContentAsByteArray().length);
 	}
 
 	@Test
@@ -648,6 +648,49 @@ public class ResourceHttpRequestHandlerTests {
 		assertEquals("Content-Type: text/plain", ranges[9]);
 		assertEquals("Content-Range: bytes 8-9/10", ranges[10]);
 		assertEquals("t.", ranges[11]);
+	}
+
+	@Test // gh-25976
+	public void partialContentByteRangeWithEncodedResource() throws Exception {
+		String path = "js/foo.js";
+		EncodedResourceResolverTests.createGzippedFile(path);
+
+		ResourceHttpRequestHandler handler = new ResourceHttpRequestHandler();
+		handler.setResourceResolvers(Arrays.asList(new EncodedResourceResolver(), new PathResourceResolver()));
+		handler.setLocations(Collections.singletonList(new ClassPathResource("test/", getClass())));
+		handler.setServletContext(new MockServletContext());
+		handler.afterPropertiesSet();
+
+		this.request.addHeader("Accept-Encoding", "gzip");
+		this.request.addHeader("Range", "bytes=0-1");
+		this.request.setAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE, path);
+		handler.handleRequest(this.request, this.response);
+
+		assertEquals(206, this.response.getStatus());
+		assertThat(response.getHeaderNames(), CoreMatchers.hasItems(
+				"Last-Modified",  "Content-Length", "Content-Type", "Content-Encoding",
+				"Vary", "Accept-Ranges", "Content-Range"));
+
+		assertEquals("application/javascript", this.response.getContentType());
+		assertEquals(2, this.response.getContentLength());
+		assertEquals("bytes 0-1/66", this.response.getHeader("Content-Range"));
+		assertEquals("bytes", this.response.getHeaderValue("Accept-Ranges"));
+		assertEquals("gzip", this.response.getHeaderValue("Content-Encoding"));
+		assertEquals("Accept-Encoding", this.response.getHeaderValue("Vary"));
+	}
+
+	@Test // gh-25976
+	public void partialContentWithHttpHead() throws Exception {
+		this.request.setMethod("HEAD");
+		this.request.addHeader("Range", "bytes=0-1");
+		this.request.setAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE, "foo.txt");
+		this.handler.handleRequest(this.request, this.response);
+
+		assertEquals(206, this.response.getStatus());
+		assertEquals("text/plain", this.response.getContentType());
+		assertEquals(2, this.response.getContentLength());
+		assertEquals("bytes 0-1/10", this.response.getHeader("Content-Range"));
+		assertEquals("bytes", this.response.getHeaderValue("Accept-Ranges"));
 	}
 
 	@Test  // SPR-14005

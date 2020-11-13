@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2019 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -383,7 +383,7 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 	 * An empty {@code HttpHeaders} instance (immutable).
 	 * @since 5.0
 	 */
-	public static final HttpHeaders EMPTY = new ReadOnlyHttpHeaders(new HttpHeaders(new LinkedMultiValueMap<>(0)));
+	public static final HttpHeaders EMPTY = new ReadOnlyHttpHeaders(new LinkedMultiValueMap<>());
 
 	/**
 	 * Pattern matching ETag multiple field values in headers such as "If-Match", "If-None-Match".
@@ -1085,6 +1085,7 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 
 	/**
 	 * Return the value of the {@code If-Match} header.
+	 * @throws IllegalArgumentException if parsing fails
 	 * @since 4.3
 	 */
 	public List<String> getIfMatch() {
@@ -1144,6 +1145,7 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 
 	/**
 	 * Return the value of the {@code If-None-Match} header.
+	 * @throws IllegalArgumentException if parsing fails
 	 */
 	public List<String> getIfNoneMatch() {
 		return getETagValuesAsList(IF_NONE_MATCH);
@@ -1471,6 +1473,7 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 	 * Retrieve a combined result from the field values of the ETag header.
 	 * @param headerName the header name
 	 * @return the combined result
+	 * @throws IllegalArgumentException if parsing fails
 	 * @since 4.3
 	 */
 	protected List<String> getETagValuesAsList(String headerName) {
@@ -1677,8 +1680,14 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 		if (!(other instanceof HttpHeaders)) {
 			return false;
 		}
-		HttpHeaders otherHeaders = (HttpHeaders) other;
-		return this.headers.equals(otherHeaders.headers);
+		return unwrap(this).equals(unwrap((HttpHeaders) other));
+	}
+
+	private static MultiValueMap<String, String> unwrap(HttpHeaders headers) {
+		while (headers.headers instanceof HttpHeaders) {
+			headers = (HttpHeaders) headers.headers;
+		}
+		return headers.headers;
 	}
 
 	@Override
@@ -1693,20 +1702,21 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 
 
 	/**
-	 * Return an {@code HttpHeaders} object that can only be read, not written to.
+	 * Apply a read-only {@code HttpHeaders} wrapper around the given headers,
+	 * if necessary.
+	 * @param headers the headers to expose
+	 * @return a read-only variant of the headers, or the original headers as-is
 	 */
 	public static HttpHeaders readOnlyHttpHeaders(HttpHeaders headers) {
 		Assert.notNull(headers, "HttpHeaders must not be null");
-		if (headers instanceof ReadOnlyHttpHeaders) {
-			return headers;
-		}
-		else {
-			return new ReadOnlyHttpHeaders(headers);
-		}
+		return (headers instanceof ReadOnlyHttpHeaders ? headers : new ReadOnlyHttpHeaders(headers.headers));
 	}
 
 	/**
-	 * Return an {@code HttpHeaders} object that can be read and written to.
+	 * Remove any read-only wrapper that may have been previously applied around
+	 * the given headers via {@link #readOnlyHttpHeaders(HttpHeaders)}.
+	 * @param headers the headers to expose
+	 * @return a writable variant of the headers, or the original headers as-is
 	 * @since 5.1.1
 	 */
 	public static HttpHeaders writableHttpHeaders(HttpHeaders headers) {
@@ -1714,12 +1724,7 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 		if (headers == EMPTY) {
 			return new HttpHeaders();
 		}
-		else if (headers instanceof ReadOnlyHttpHeaders) {
-			return new HttpHeaders(headers.headers);
-		}
-		else {
-			return headers;
-		}
+		return (headers instanceof ReadOnlyHttpHeaders ? new HttpHeaders(headers.headers) : headers);
 	}
 
 	/**

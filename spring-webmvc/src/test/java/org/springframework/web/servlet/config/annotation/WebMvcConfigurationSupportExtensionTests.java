@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2019 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,6 +64,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.HandlerExecutionChain;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.handler.AbstractHandlerMapping;
@@ -136,12 +137,13 @@ public class WebMvcConfigurationSupportExtensionTests {
 		assertThat(rmHandlerMapping.getPathMatcher().getClass()).isEqualTo(TestPathMatcher.class);
 		HandlerExecutionChain chain = rmHandlerMapping.getHandler(new MockHttpServletRequest("GET", "/"));
 		assertThat(chain).isNotNull();
-		assertThat(chain.getInterceptors()).isNotNull();
-		assertThat(chain.getInterceptors().length).isEqualTo(4);
-		assertThat(chain.getInterceptors()[0].getClass().getSimpleName()).isEqualTo("CorsInterceptor");
-		assertThat(chain.getInterceptors()[1].getClass()).isEqualTo(LocaleChangeInterceptor.class);
-		assertThat(chain.getInterceptors()[2].getClass()).isEqualTo(ConversionServiceExposingInterceptor.class);
-		assertThat(chain.getInterceptors()[3].getClass()).isEqualTo(ResourceUrlProviderExposingInterceptor.class);
+		HandlerInterceptor[] interceptors = chain.getInterceptors();
+		assertThat(interceptors).isNotNull();
+		assertThat(interceptors.length).isEqualTo(4);
+		assertThat(interceptors[0].getClass().getSimpleName()).isEqualTo("CorsInterceptor");
+		assertThat(interceptors[1].getClass()).isEqualTo(LocaleChangeInterceptor.class);
+		assertThat(interceptors[2].getClass()).isEqualTo(ConversionServiceExposingInterceptor.class);
+		assertThat(interceptors[3].getClass()).isEqualTo(ResourceUrlProviderExposingInterceptor.class);
 
 		Map<RequestMappingInfo, HandlerMethod> map = rmHandlerMapping.getHandlerMethods();
 		assertThat(map.size()).isEqualTo(2);
@@ -150,10 +152,9 @@ public class WebMvcConfigurationSupportExtensionTests {
 				.findFirst()
 				.orElseThrow(() -> new AssertionError("UserController bean not found"))
 				.getKey();
-		assertThat(info.getPatternsCondition().getPatterns()).isEqualTo(Collections.singleton("/api/user/{id}"));
+		assertThat(info.getPatternValues()).isEqualTo(Collections.singleton("/api/user/{id}"));
 
 		AbstractHandlerMapping handlerMapping = (AbstractHandlerMapping) this.config.viewControllerHandlerMapping(
-				this.config.mvcPathMatcher(), this.config.mvcUrlPathHelper(),
 				this.config.mvcConversionService(), this.config.mvcResourceUrlProvider());
 		handlerMapping.setApplicationContext(this.context);
 		assertThat(handlerMapping).isNotNull();
@@ -171,7 +172,6 @@ public class WebMvcConfigurationSupportExtensionTests {
 		assertThat(chain.getHandler()).isNotNull();
 
 		handlerMapping = (AbstractHandlerMapping) this.config.resourceHandlerMapping(
-				this.config.mvcUrlPathHelper(), this.config.mvcPathMatcher(),
 				this.config.mvcContentNegotiationManager(), this.config.mvcConversionService(),
 				this.config.mvcResourceUrlProvider());
 		handlerMapping.setApplicationContext(this.context);
@@ -182,12 +182,13 @@ public class WebMvcConfigurationSupportExtensionTests {
 		chain = handlerMapping.getHandler(new MockHttpServletRequest("GET", "/resources/foo.gif"));
 		assertThat(chain).isNotNull();
 		assertThat(chain.getHandler()).isNotNull();
-		assertThat(chain.getInterceptors().length).as(Arrays.toString(chain.getInterceptors())).isEqualTo(5);
-		assertThat(chain.getInterceptors()[0].getClass().getSimpleName()).isEqualTo("CorsInterceptor");
-		// PathExposingHandlerInterceptor at chain.getInterceptors()[1]
-		assertThat(chain.getInterceptors()[2].getClass()).isEqualTo(LocaleChangeInterceptor.class);
-		assertThat(chain.getInterceptors()[3].getClass()).isEqualTo(ConversionServiceExposingInterceptor.class);
-		assertThat(chain.getInterceptors()[4].getClass()).isEqualTo(ResourceUrlProviderExposingInterceptor.class);
+		interceptors = chain.getInterceptors();
+		assertThat(interceptors.length).as(Arrays.toString(interceptors)).isEqualTo(5);
+		assertThat(interceptors[0].getClass().getSimpleName()).isEqualTo("CorsInterceptor");
+		// PathExposingHandlerInterceptor at interceptors[1]
+		assertThat(interceptors[2].getClass()).isEqualTo(LocaleChangeInterceptor.class);
+		assertThat(interceptors[3].getClass()).isEqualTo(ConversionServiceExposingInterceptor.class);
+		assertThat(interceptors[4].getClass()).isEqualTo(ResourceUrlProviderExposingInterceptor.class);
 
 		handlerMapping = (AbstractHandlerMapping) this.config.defaultServletHandlerMapping();
 		handlerMapping.setApplicationContext(this.context);
@@ -265,6 +266,7 @@ public class WebMvcConfigurationSupportExtensionTests {
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void contentNegotiation() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/foo.json");
 		NativeWebRequest webRequest = new ServletWebRequest(request);
@@ -290,7 +292,6 @@ public class WebMvcConfigurationSupportExtensionTests {
 
 		request.setRequestURI("/resources/foo.gif");
 		SimpleUrlHandlerMapping handlerMapping = (SimpleUrlHandlerMapping) this.config.resourceHandlerMapping(
-				this.config.mvcUrlPathHelper(), this.config.mvcPathMatcher(),
 				this.config.mvcContentNegotiationManager(), this.config.mvcConversionService(),
 				this.config.mvcResourceUrlProvider());
 		handlerMapping.setApplicationContext(this.context);

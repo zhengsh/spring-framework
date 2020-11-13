@@ -284,10 +284,14 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		final TransactionAttribute txAttr = (tas != null ? tas.getTransactionAttribute(method, targetClass) : null);
 		// 得到一个 @Transactional 注解的信息
 		final PlatformTransactionManager tm = determineTransactionManager(txAttr);
+		// 根据当前执行的类中的某个方法以及 @Transactional 注解的信息生成一个唯一的标示， 这个标示会用来作为事务的名称
 		final String joinpointIdentification = methodIdentification(method, targetClass, txAttr);
 
 		if (txAttr == null || !(tm instanceof CallbackPreferringPlatformTransactionManager)) {
 			// Standard transaction demarcation with getTransaction and commit/rollback calls.
+			// 创建事务，并且得到当前事务的信息，后面需要事务信息来进行提交或者回滚
+			// 例如: cn.edu.cqvie.tx.service.PersonService.test
+			// 这里默认就是 类名全路径 + 方法名
 			TransactionInfo txInfo = createTransactionIfNecessary(tm, txAttr, joinpointIdentification);
 
 			Object retVal;
@@ -556,6 +560,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 						"] after exception: " + ex);
 			}
 			// 如果当前异常需要回滚，就执行回滚操作，否则提交
+			// 默认是 RuntimeException 或者 Error
 			if (txInfo.transactionAttribute != null && txInfo.transactionAttribute.rollbackOn(ex)) {
 				try {
 					txInfo.getTransactionManager().rollback(txInfo.getTransactionStatus());

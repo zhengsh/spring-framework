@@ -31,7 +31,7 @@ public class PersonService {
 	/**
 	 * 事务测试
 	 */
-	//@Transactional(rollbackFor = RuntimeException.class)
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = RuntimeException.class)
 	public void test() {
 		System.out.println("test method invoke start");
 		Person person = new Person();
@@ -53,17 +53,31 @@ public class PersonService {
 		});
 
 		person.setUsername("WanKen");
-		personService.insert1(person);
+		personService.insert(person);
 		System.out.println("test method invoke end");
+
+		//测试3. 新开一个线程会重新创建事务
+		new Thread(() -> {
+			person.setUsername("WanKen");
+			personService.insert(person);
+			System.out.println("test method invoke end");
+		}).start();
+
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * 用户信息插入
 	 * 测试2. 如果方法被 private 修饰那么这里不会被代理，执行的时候 personMapper 就是一个 null
 	 * wen
+	 *
 	 * @param person 用户信息
 	 */
-	//@Transactional(propagation = Propagation.NEVER, rollbackFor = RuntimeException.class)
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = RuntimeException.class)
 	private void insert1(Person person) {
 		System.out.println("insert method invoke start exec sql");
 		System.out.println("private method " + this);
@@ -71,15 +85,22 @@ public class PersonService {
 		System.out.println("insert method invoke end exec sql");
 		int s = 0;
 		//int a = 100 / s;
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * 用户信息插入
 	 * 测试2. 如果方法被 private 修饰那么这里不会被代理，执行的时候 personMapper 就是一个 null
+	 *
 	 * @param person 用户信息
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = RuntimeException.class)
 	public void insert(Person person) {
+		System.out.println("ResourceMap().size()" + TransactionSynchronizationManager.getResourceMap().size());
 		System.out.println("insert method invoke start exec sql");
 		System.out.println("private method " + this);
 		personMapper.insert(person);

@@ -76,7 +76,12 @@ public class Person {
 		this.createTime = createTime;
 	}
 
-
+	/**
+	 * Person#type 数据范围枚举
+	 *
+	 * @author zengsh
+	 * @date 2020-11-13
+	 */
 	public enum TypeEnum {
 
 		/**

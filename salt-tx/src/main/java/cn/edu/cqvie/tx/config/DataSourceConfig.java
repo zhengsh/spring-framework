@@ -17,6 +17,11 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 @MapperScan(basePackages = "cn.edu.cqvie.tx.mapper")
 public class DataSourceConfig {
 
+	/**
+	 * 数据源配置
+	 *
+	 * @return 数据源
+	 */
 	@Bean
 	public BasicDataSource dataSource() {
 		BasicDataSource dataSource = new BasicDataSource();
@@ -29,11 +34,21 @@ public class DataSourceConfig {
 		return dataSource;
 	}
 
+	/**
+	 * 事务管理器配置
+	 *
+	 * @return 事务管理器
+	 */
 	@Bean
 	public DataSourceTransactionManager transactionManager() {
 		return new DataSourceTransactionManager(dataSource());
 	}
 
+	/**
+	 * SqlSession 工厂
+	 *
+	 * @return SqlSessionFactoryBean
+	 */
 	@Bean
 	public SqlSessionFactoryBean sqlSessionFactory() {
 		SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();

@@ -65,6 +65,7 @@ public enum Propagation {
 	 * made available to it (which is server-specific in standard Java EE).
 	 * @see org.springframework.transaction.jta.JtaTransactionManager#setTransactionManager
 	 */
+	// 挂起之前的数据库连接，然后去新创建连接
 	REQUIRES_NEW(TransactionDefinition.PROPAGATION_REQUIRES_NEW),
 
 	/**

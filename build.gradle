@@ -307,6 +307,10 @@ configure(rootProject) {
 	}
 }
 
+dependencies {
+	implementation 'org.junit.jupiter:junit-jupiter'
+}
+
 /*
  * Support publication of artifacts versioned by topic branch.
  * CI builds supply `-P BRANCH_NAME=<TOPIC>` to gradle at build time.

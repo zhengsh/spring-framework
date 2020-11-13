@@ -31,4 +31,6 @@ rootProject.children.each {project ->
 }
 include 'spring-cglib0'
 include 'salt-ioc'
+include 'salt-tx'
+include 'salt-aop'
 

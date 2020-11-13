@@ -15,7 +15,7 @@ import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROT
 
 @Scope(SCOPE_PROTOTYPE)
 @Service
-@DependsOn("xService")
+//@DependsOn("xService")
 public class YService implements ApplicationContextAware {
 
     //    @Autowired

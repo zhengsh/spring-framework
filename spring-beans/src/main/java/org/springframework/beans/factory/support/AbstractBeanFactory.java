@@ -313,8 +313,12 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 							throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 									"Circular depends-on relationship between '" + beanName + "' and '" + dep + "'");
 						}
+						// 存在两个 map 中
+						// 1. dependentBeanMap key 为 dep , value 是一个 LinkedHashSet. 表示 dep 被那些 bean 依赖了。
+						// 2. dependenciesForBeanMap key 是 beanName, value 是一个 LinkedHashSet ,  表示 beanName 依赖
 						registerDependentBean(dep, beanName);
 						try {
+							// 先去生成所依赖的 Bean
 							getBean(dep);
 						}
 						catch (NoSuchBeanDefinitionException ex) {
@@ -328,6 +332,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				// 7. 启动单实例Bean的创建过程
 				//		1）、createBean(String beanName, RootBeanDefinition mbd, @Nullable Object[] args)
 				//		2）、Object bean = resolveBeforeInstantiation(beanName, mbdToUse); 让BeanPostProcessor 先拦截返回代理对象
+				// 单例模式
 				if (mbd.isSingleton()) {
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
@@ -358,7 +363,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 
 				else {
-					String scopeName = mbd.getScope();
+					String scopeName = mbd.getScope();// 获取作用域: request、session
 					final Scope scope = this.scopes.get(scopeName);
 					if (scope == null) {
 						throw new IllegalStateException("No Scope registered for scope name '" + scopeName + "'");

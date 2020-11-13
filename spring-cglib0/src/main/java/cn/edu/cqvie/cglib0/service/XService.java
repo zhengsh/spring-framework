@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 //@Lazy
 
 @Service
-@DependsOn("yService")
+//@DependsOn("yService")
 public class XService {
 
 //	@Autowired

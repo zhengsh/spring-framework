@@ -21,7 +21,6 @@ import java.util.Objects;
  */
 public class IocApplicationContext {
 
-	private Class configClass;
 	/**
 	 * Bean 定义集合
 	 */
@@ -31,8 +30,7 @@ public class IocApplicationContext {
 	 */
 	private Map<String, Object> singletonObjects = new HashMap<>();
 
-	public IocApplicationContext(Class configClass) {
-		this.configClass = configClass;
+	public IocApplicationContext(Class<?> configClass) {
 
 		//扫描
 		scan(configClass);
@@ -55,7 +53,7 @@ public class IocApplicationContext {
 	}
 
 	private Object createBean(BeanDefinition beanDefinition) {
-		Class beanClass = beanDefinition.getBeanClass();
+		Class<?> beanClass = beanDefinition.getBeanClass();
 		try {
 			Object instance = beanClass.getDeclaredConstructor().newInstance();
 			//todo
@@ -72,9 +70,9 @@ public class IocApplicationContext {
 		return null;
 	}
 
-	private void scan(Class configClass) {
+	private void scan(Class<?> configClass) {
 		if (configClass.isAnnotationPresent(ComponentScan.class)) {
-			ComponentScan cs = (ComponentScan) configClass.getAnnotation(ComponentScan.class);
+			ComponentScan cs = configClass.getAnnotation(ComponentScan.class);
 			for (String path : cs.value()) {
 				path = path.replace(".", "/");
 
@@ -90,14 +88,15 @@ public class IocApplicationContext {
 						System.out.println(s);
 					}
 					try {
-						Class clazz = classLoader.loadClass(s);
+						Class<?> clazz = classLoader.loadClass(s);
 						System.out.println(clazz);
 						if (clazz.isAnnotationPresent(Component.class)) {
 
-							Component component = (Component) clazz.getAnnotation(Component.class);
+							Component component = clazz.getAnnotation(Component.class);
 							String beanName = component.value();
 							if ("".equals(beanName)) {
-								beanName = file.getName().substring(0, s.indexOf(".class"));
+								String fileName = f.getName();
+								beanName = fileName.substring(0, 1).toLowerCase() + fileName.substring(1, fileName.indexOf(".class"));
 							}
 
 							BeanDefinition beanDefinition = new BeanDefinition();
@@ -109,7 +108,7 @@ public class IocApplicationContext {
 							}
 							//是否是单例
 							if (clazz.isAnnotationPresent(Scope.class)) {
-								Scope scope = (Scope) clazz.getAnnotation(Scope.class);
+								Scope scope = clazz.getAnnotation(Scope.class);
 								String value = scope.value();
 								if (!"".equals(value.trim())) {
 									beanDefinition.setScope(value);
@@ -135,7 +134,7 @@ public class IocApplicationContext {
 	 * @return
 	 */
 	public Object getBean(String beanName) {
-		if (beanDefinitionMap.containsKey(beanName)) {
+		if (!beanDefinitionMap.containsKey(beanName)) {
 			throw new NullPointerException();
 		} else {
 			BeanDefinition beanDefinition = beanDefinitionMap.get(beanName);

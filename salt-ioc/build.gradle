@@ -11,8 +11,13 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    compile(project(":spring-context"))
-    compile(project(":spring-aop"))
-    compile(project(":spring-aspects"))
+//dependencies {
+//    compile(project(":spring-context"))
+//}
+
+//关闭测试任务
+check.dependsOn.remove(test)
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
 }

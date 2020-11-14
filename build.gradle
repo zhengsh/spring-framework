@@ -246,9 +246,10 @@ configure(subprojects - project(":spring-build-src")) { subproject ->
 		from javadoc
 	}
 
+	//源码编译优化, 去掉一些与jar包构建无关的task 2020-11-14
 	artifacts {
-		archives sourcesJar
-		archives javadocJar
+//		archives sourcesJar
+//		archives javadocJar
 	}
 }
 
@@ -287,10 +288,11 @@ configure(rootProject) {
 		testCompile("org.hibernate:hibernate-core:5.1.17.Final")
 	}
 
+	//源码编译优化, 去掉一些与jar包构建无关的task 2020-11-14
 	artifacts {
-		archives docsZip
-		archives schemaZip
-		archives distZip
+//		archives docsZip
+//		archives schemaZip
+//		archives distZip
 	}
 
 	wrapper {
@@ -308,7 +310,7 @@ configure(rootProject) {
 }
 
 dependencies {
-	implementation 'org.junit.jupiter:junit-jupiter'
+	implementation 'org.junit.jupiter:junit-jupiter:5.5.0'
 }
 
 /*

@@ -20,7 +20,7 @@ import java.util.*;
  */
 public class AnnotationApplicationContext implements ApplicationContext {
 
-    private Class configClass;
+	private Class<?> configClass;
     /**
      * Bean 定义集合
      */
@@ -31,7 +31,7 @@ public class AnnotationApplicationContext implements ApplicationContext {
     private Map<String, Object> singletonObjects = new HashMap<>();
     private List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
 
-    public AnnotationApplicationContext(Class configClass) {
+    public AnnotationApplicationContext(Class<?> configClass) {
         this.configClass = configClass;
 
         //扫描
@@ -55,7 +55,7 @@ public class AnnotationApplicationContext implements ApplicationContext {
     }
 
     private Object createBean(BeanDefinition beanDefinition, String beanName) {
-        Class beanClass = beanDefinition.getBeanClass();
+        Class<?> beanClass = beanDefinition.getBeanClass();
         try {
             Object instance = beanClass.getDeclaredConstructor().newInstance();
 
@@ -102,9 +102,9 @@ public class AnnotationApplicationContext implements ApplicationContext {
         return null;
     }
 
-    private void scan(Class configClass) {
+    private void scan(Class<?> configClass) {
         if (configClass.isAnnotationPresent(ComponentScan.class)) {
-            ComponentScan cs = (ComponentScan) configClass.getAnnotation(ComponentScan.class);
+            ComponentScan cs = configClass.getAnnotation(ComponentScan.class);
             String[] values = cs.value();
             for (String path : values) {
                 path = path.replace(".", "/");
@@ -121,7 +121,7 @@ public class AnnotationApplicationContext implements ApplicationContext {
                         System.out.println(s);
                     }
                     try {
-                        Class clazz = classLoader.loadClass(s);
+                        Class<?> clazz = classLoader.loadClass(s);
                         System.out.println(clazz);
                         if (clazz.isAnnotationPresent(Component.class)) {
                             //扫描过程中创建 BeanPostProcessor 实例
@@ -130,7 +130,7 @@ public class AnnotationApplicationContext implements ApplicationContext {
                                 beanPostProcessors.add(beanPostProcessor);
                             }
 
-                            Component component = (Component) clazz.getAnnotation(Component.class);
+                            Component component = clazz.getAnnotation(Component.class);
                             String beanName = component.value();
                             if ("".equals(beanName)) {
                                 beanName = f.getName();
@@ -147,7 +147,7 @@ public class AnnotationApplicationContext implements ApplicationContext {
                             }
                             //是否是单例
                             if (clazz.isAnnotationPresent(Scope.class)) {
-                                Scope scope = (Scope) clazz.getAnnotation(Scope.class);
+                                Scope scope = clazz.getAnnotation(Scope.class);
                                 String value = scope.value();
                                 if (!"".equals(value.trim())) {
                                     beanDefinition.setScope(value);

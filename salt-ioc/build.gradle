@@ -11,9 +11,9 @@ repositories {
     mavenCentral()
 }
 
-//dependencies {
-//    compile(project(":spring-context"))
-//}
+dependencies {
+    compile(project(":spring-context"))
+}
 
 //关闭测试任务
 check.dependsOn.remove(test)

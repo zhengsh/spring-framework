@@ -228,6 +228,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
+		// 获取 beanType 的注入点
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, beanType, null);
 		metadata.checkConfigMembers(beanDefinition);
 	}
@@ -371,8 +372,10 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 	@Override
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
+		// InjectionMetadata 中保存了所有被 @Autowired 注解标注的属性/防范并且封装成了一个个 injectedElements
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, bean.getClass(), pvs);
 		try {
+			// 按注入点进行注入
 			metadata.inject(bean, beanName, pvs);
 		}
 		catch (BeanCreationException ex) {
@@ -426,7 +429,9 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 					if (metadata != null) {
 						metadata.clear(pvs);
 					}
+					// 寻找当前 clazz 中的注入点，把所有的注入点整合成为一个 InjectionMetadata 对象
 					metadata = buildAutowiringMetadata(clazz);
+					// 回写到缓存中
 					this.injectionMetadataCache.put(cacheKey, metadata);
 				}
 			}
@@ -443,18 +448,23 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 			ReflectionUtils.doWithLocalFields(targetClass, field -> {
 				AnnotationAttributes ann = findAutowiredAnnotation(field);
+				// 如果存在 @Autowired， @Value，@Inject 注解中的一个
 				if (ann != null) {
+					// 如果字段是 static 的， 则直接进行返回， 不进行注入
 					if (Modifier.isStatic(field.getModifiers())) {
 						if (logger.isInfoEnabled()) {
 							logger.info("Autowired annotation is not supported on static fields: " + field);
 						}
 						return;
 					}
+					// 是否是 required
 					boolean required = determineRequiredStatus(ann);
+					// 生成一个注入点 AutowiredFieldElement
 					currElements.add(new AutowiredFieldElement(field, required));
 				}
 			});
 
+			// 遍历方法，看是否有 @Autowired， @Value，@Inject 注解
 			ReflectionUtils.doWithLocalMethods(targetClass, method -> {
 				Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
 				if (!BridgeMethodResolver.isVisibilityBridgeMethodPair(method, bridgedMethod)) {
@@ -479,12 +489,13 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 					currElements.add(new AutowiredMethodElement(method, required, pd));
 				}
 			});
-
+			// 能够注入的所有集合
 			elements.addAll(0, currElements);
 			targetClass = targetClass.getSuperclass();
 		}
 		while (targetClass != null && targetClass != Object.class);
 
+		// 所有能够注入的属性集合对应封装到  InjectionMetadata 对象
 		return new InjectionMetadata(clazz, elements);
 	}
 

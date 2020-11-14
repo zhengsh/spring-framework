@@ -1404,6 +1404,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		PropertyValues pvs = (mbd.hasPropertyValues() ? mbd.getPropertyValues() : null);
 
+		// 自动注入模式
 		int resolvedAutowireMode = mbd.getResolvedAutowireMode();
 		if (resolvedAutowireMode == AUTOWIRE_BY_NAME || resolvedAutowireMode == AUTOWIRE_BY_TYPE) {
 			MutablePropertyValues newPvs = new MutablePropertyValues(pvs);
@@ -1418,9 +1419,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			pvs = newPvs;
 		}
 
+		// 执行完成 Spring 的自动注入之后，就开始解析 @Autowired . 这里叫做实例化回调
 		boolean hasInstAwareBpps = hasInstantiationAwareBeanPostProcessors();
 		boolean needsDepCheck = (mbd.getDependencyCheck() != AbstractBeanDefinition.DEPENDENCY_CHECK_NONE);
 
+		// @Autowired 注解的 AutowiredAnnotationBeanPostProcessor
+		// @Resource 注解的 CommonAnnotationBeanPostProcessor
 		PropertyDescriptor[] filteredPds = null;
 		if (hasInstAwareBpps) {
 			if (pvs == null) {
@@ -1429,10 +1433,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			for (BeanPostProcessor bp : getBeanPostProcessors()) {
 				if (bp instanceof InstantiationAwareBeanPostProcessor) {
 					InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
+
+					// 调用 BeanPostProcessor 分别解析 @Autowired、@Resource、@Value 为属性注入值
 					PropertyValues pvsToUse = ibp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName);
+
 					if (pvsToUse == null) {
 						if (filteredPds == null) {
-							filteredPds = filterPropertyDescriptorsForDependencyCheck(bw, mbd.allowCaching);
+							filteredPds =filterPropertyDescriptorsForDependencyCheck(bw, mbd.allowCaching);
 						}
 						pvsToUse = ibp.postProcessPropertyValues(pvs, filteredPds, bw.getWrappedInstance(), beanName);
 						if (pvsToUse == null) {
@@ -1467,10 +1474,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected void autowireByName(
 			String beanName, AbstractBeanDefinition mbd, BeanWrapper bw, MutablePropertyValues pvs) {
 
+		// 获取对应的 set 属性
 		String[] propertyNames = unsatisfiedNonSimpleProperties(mbd, bw);
 		for (String propertyName : propertyNames) {
 			if (containsBean(propertyName)) {
+				// 根据属性名称去查找 bean, 这个就是 byName
 				Object bean = getBean(propertyName);
+				// 给属性赋值
 				pvs.add(propertyName, bean);
 				registerDependentBean(propertyName, beanName);
 				if (logger.isTraceEnabled()) {

@@ -22,10 +22,6 @@ public class GoodsService implements InitializingBean, ApplicationContextAware {
 	@Autowired
 	private StockService stockService;
 
-	public void setStockService(StockService stockService) {
-
-	}
-
 	public void test() {
 		System.out.println("goodsService.test invoker! ");
 
@@ -52,5 +48,13 @@ public class GoodsService implements InitializingBean, ApplicationContextAware {
 		System.out.println("GoodsService ApplicationContextAware");
 	}
 
+	public StockService getStockService() {
+		return stockService;
+	}
+
+	public void setStockService(StockService stockService) {
+		System.out.println("GoodsService#setStockService invoke!");
+		this.stockService = stockService;
+	}
 
 }

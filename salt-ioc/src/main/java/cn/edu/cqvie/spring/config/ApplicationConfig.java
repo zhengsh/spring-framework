@@ -13,6 +13,6 @@ import org.springframework.context.annotation.ImportResource;
  */
 @Configuration
 @ComponentScan("cn.edu.cqvie.spring.service")
-@Import(TestBeanPostProcessor.class)
+//@Import(TestBeanPostProcessor.class)
 public class ApplicationConfig {
 }

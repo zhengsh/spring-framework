@@ -411,6 +411,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		Object result = existingBean;
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
+			// bpp1 => bpp2 ==> bpp3 (这里相当于是一个过滤器)
 			Object current = processor.postProcessBeforeInitialization(result, beanName);
 			if (current == null) {
 				return result;
@@ -1804,6 +1805,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (mbd == null || !mbd.isSynthetic()) {
 			// 2. 【执行后置处理器的初始化方法之前】applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 			//		BeanPostProcessor.postProcessBeforeInitialization(result, beanName);
+			// 4.2 初始化前
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
@@ -1811,6 +1813,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 3. 执行初始化方法 invokeInitMethods(beanName, wrappedBean, mbd);
 			//		1）、是否是 InitializingBean 接口的实现；执行接口规定的初始化方法
 			//		2）、是否自定义初始化方法
+			// 4.3 初始化
 			invokeInitMethods(beanName, wrappedBean, mbd);
 		}
 		catch (Throwable ex) {
@@ -1821,6 +1824,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (mbd == null || !mbd.isSynthetic()) {
 			// 4. 后置处理器初始化之后执行初始化之后 applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 			// 		BeanPostProcessor.postProcessAfterInitialization()
+			// 4.4 初始化后  AOP
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 

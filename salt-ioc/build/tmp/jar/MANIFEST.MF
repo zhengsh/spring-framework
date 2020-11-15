@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Implementation-Title: salt-ioc
+Automatic-Module-Name: salt.ioc
+Implementation-Version: 5.1.14.BUILD-SNAPSHOT
+Created-By: 1.8.0_241 (Oracle Corporation)
+

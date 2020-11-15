@@ -183,6 +183,10 @@ public abstract class ClassUtils {
 	 */
 	@Nullable
 	public static ClassLoader getDefaultClassLoader() {
+		// 先去获取当前线程对应的 上下文 classloader
+		// 再去获取 ClassUtils 对应的 classloader
+		// 最后去取系统指定的 classloader
+
 		ClassLoader cl = null;
 		try {
 			cl = Thread.currentThread().getContextClassLoader();
@@ -260,6 +264,7 @@ public abstract class ClassUtils {
 		}
 
 		// "[Ljava.lang.String;" style arrays
+		// 如果需要加载的是 "java.lang.String[]" 那么则返回 "[Ljava.lang.String;"
 		if (name.startsWith(NON_PRIMITIVE_ARRAY_PREFIX) && name.endsWith(";")) {
 			String elementName = name.substring(NON_PRIMITIVE_ARRAY_PREFIX.length(), name.length() - 1);
 			Class<?> elementClass = forName(elementName, classLoader);

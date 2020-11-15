@@ -246,7 +246,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		// 2. 先获取缓存中保存的单实例 Bean。如果能获取到说明这个Bean之前被创建过（所有单实例Bean都会被缓存起来）
 		//			private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
 		// 第一次获取单例Bean
-		Object sharedInstance = getSingleton(beanName);
+		Object sharedInstance = getSingleton(beanName);  //Map<beanName, Object>
 		if (sharedInstance != null && args == null) { // Bean 存在
 			if (logger.isTraceEnabled()) {
 				if (isSingletonCurrentlyInCreation(beanName)) {
@@ -264,6 +264,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		else {
 			// Fail if we're already creating this bean instance:
 			// We're assumably within a circular reference.
+			// 原型 bean 正在创建中
 			if (isPrototypeCurrentlyInCreation(beanName)) {
 				throw new BeanCurrentlyInCreationException(beanName);
 			}
@@ -271,6 +272,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			// Check if bean definition exists in this factory.
 			// 3. 从缓存中拿不到，开始 Bean 创建流程
 			BeanFactory parentBeanFactory = getParentBeanFactory();
+			// 当前 BeanFactory 中不存在 beanName 对象的 BeanDefinition ，那么则从  ParentBeanFactory 中获取
 			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
 				// Not found -> check parent.
 				String nameToLookup = originalBeanName(name);
@@ -395,6 +397,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		}
 
 		// Check if required type matches the type of the actual bean instance.
+		// 根据 beanName 获取到 bean 的类型， 是否和 requiredType 匹配，如果不匹配则进行类型转换
 		if (requiredType != null && !requiredType.isInstance(bean)) {
 			try {
 				T convertedBean = getTypeConverter().convertIfNecessary(bean, requiredType);
@@ -1394,6 +1397,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			throws CannotLoadBeanClassException {
 
 		try {
+			// 直接返回 beanClass
 			if (mbd.hasBeanClass()) {
 				return mbd.getBeanClass();
 			}
@@ -1402,6 +1406,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					doResolveBeanClass(mbd, typesToMatch), getAccessControlContext());
 			}
 			else {
+				// 加载 BeanDefinition 中的 beanClass 中类名对应的类
 				return doResolveBeanClass(mbd, typesToMatch);
 			}
 		}
@@ -1420,7 +1425,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	@Nullable
 	private Class<?> doResolveBeanClass(RootBeanDefinition mbd, Class<?>... typesToMatch)
 			throws ClassNotFoundException {
+		// 根据 mbd 中的 beanClassName 来记载类并且返回
 
+		// 拿到类加载器
 		ClassLoader beanClassLoader = getBeanClassLoader();
 		ClassLoader dynamicLoader = beanClassLoader;
 		boolean freshResolve = false;
@@ -1441,8 +1448,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 		}
 
+		// 获取 BeanDefinition 中所指定的 beanClass 属性的值， beanClass 属性的类型为 Object，可以指定为某个类名
 		String className = mbd.getBeanClassName();
 		if (className != null) {
+			// className 可以有 SpEL，所以需要解析
 			Object evaluated = evaluateBeanDefinitionString(className, mbd);
 			if (!className.equals(evaluated)) {
 				// A dynamically resolved expression, supported as of 4.2...

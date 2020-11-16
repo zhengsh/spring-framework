@@ -13,9 +13,11 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class ApplicationContextTest {
 
 	public static void main(String[] args) {
-		AnnotationConfigApplicationContext applicationContext =new AnnotationConfigApplicationContext(ApplicationConfig.class);
+		AnnotationConfigApplicationContext applicationContext =
+				new AnnotationConfigApplicationContext(ApplicationConfig.class);
 		GoodsService goodsService = applicationContext.getBean("goodsService", GoodsService.class);
 		System.out.println(goodsService);
+
 		goodsService.test();
 	}
 }

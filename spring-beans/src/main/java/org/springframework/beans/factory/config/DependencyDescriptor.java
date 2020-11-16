@@ -47,6 +47,8 @@ import org.springframework.util.ObjectUtils;
  * Wraps a constructor parameter, a method parameter or a field,
  * allowing unified access to their metadata.
  *
+ * 依赖描述
+ *
  * @author Juergen Hoeller
  * @since 2.5
  */

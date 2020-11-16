@@ -962,7 +962,6 @@ public class AnnotationDrivenEventListenerTests {
 	}
 
 
-
 	@EventListener
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface ConditionalEvent {

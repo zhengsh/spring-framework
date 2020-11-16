@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+}
+
+group 'org.springframework'
+version '5.1.14.BUILD-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile(project(":spring-context"))
+}
+
+//关闭测试任务
+check.dependsOn.remove(test)
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}

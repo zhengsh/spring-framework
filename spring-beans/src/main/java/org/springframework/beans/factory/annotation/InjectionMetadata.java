@@ -71,7 +71,7 @@ public class InjectionMetadata {
 	private final Collection<InjectedElement> injectedElements;
 
 	@Nullable
-	private volatile Set<InjectedElement> checkedElements;
+	private volatile Set<InjectedElement> checkedElements; // 存储的是某个类的所有的注入点
 
 
 	/**

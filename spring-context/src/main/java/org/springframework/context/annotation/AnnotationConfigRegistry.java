@@ -31,13 +31,17 @@ public interface AnnotationConfigRegistry {
 	 * component class more than once has no additional effect.
 	 * @param componentClasses one or more component classes,
 	 * e.g. {@link Configuration @Configuration} classes
+	 *
+	 * 注册一个或者多个组件类
 	 */
-	void register(Class<?>... componentClasses);
+	void register(Class<?>... componentClasses); //AnnotatedBeanDefinitionReader
 
 	/**
 	 * Perform a scan within the specified base packages.
 	 * @param basePackages the packages to scan for component classes
+	 *
+	 * 扫描组件类
 	 */
-	void scan(String... basePackages);
+	void scan(String... basePackages);  //ClassPathBeanDefinitionScanner
 
 }

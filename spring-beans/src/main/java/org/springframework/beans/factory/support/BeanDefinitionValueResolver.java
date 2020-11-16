@@ -199,9 +199,12 @@ class BeanDefinitionValueResolver {
 			});
 			return copy;
 		}
+		// 处理String类型的值：处理SpEL表达式，但是它并不处理占位符
 		else if (value instanceof TypedStringValue) {
 			// Convert value to target type here.
 			TypedStringValue typedStringValue = (TypedStringValue) value;
+			// 此处evaluate最终调用的是我们熟悉的this.beanFactory.evaluateBeanDefinitionString(value, this.beanDefinition)方法
+			// 而它底层调用是this.beanExpressionResolver.evaluate(value, new BeanExpressionContext(this, scope));
 			Object valueObject = evaluate(typedStringValue);
 			try {
 				Class<?> resolvedTargetType = resolveTargetType(typedStringValue);

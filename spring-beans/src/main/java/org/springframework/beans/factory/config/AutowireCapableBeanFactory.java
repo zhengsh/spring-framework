@@ -392,6 +392,8 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 	 * @throws BeansException if dependency resolution failed for any other reason
 	 * @since 2.5
 	 * @see DependencyDescriptor
+	 *
+	 *  DependencyDescriptor 表示依赖， 需要给这个依赖注入值， 这个依赖可能是 field/method/constructor
 	 */
 	@Nullable
 	Object resolveDependency(DependencyDescriptor descriptor, @Nullable String requestingBeanName,

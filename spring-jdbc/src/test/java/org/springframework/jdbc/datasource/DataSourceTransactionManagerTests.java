@@ -901,6 +901,7 @@ public class DataSourceTransactionManagerTests  {
 	public void testTransactionWithIsolationAndReadOnly() throws Exception {
 		given(con.getTransactionIsolation()).willReturn(Connection.TRANSACTION_READ_COMMITTED);
 		given(con.getAutoCommit()).willReturn(true);
+		given(con.isReadOnly()).willReturn(true);
 
 		TransactionTemplate tt = new TransactionTemplate(tm);
 		tt.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
@@ -937,6 +938,7 @@ public class DataSourceTransactionManagerTests  {
 		given(con.getAutoCommit()).willReturn(true);
 		Statement stmt = mock(Statement.class);
 		given(con.createStatement()).willReturn(stmt);
+		given(con.isReadOnly()).willReturn(true);
 
 		TransactionTemplate tt = new TransactionTemplate(tm);
 		tt.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);

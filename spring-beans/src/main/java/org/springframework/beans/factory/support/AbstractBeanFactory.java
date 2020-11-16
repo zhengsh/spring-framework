@@ -239,6 +239,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredType,
 			@Nullable final Object[] args, boolean typeCheckOnly) throws BeansException {
 
+		//对 beanName 进行转换 name 如果是 "&xxxFactoryBean" 那么 beanName 就是 xxxFactoryBean
 		final String beanName = transformedBeanName(name);
 		Object bean;
 
@@ -246,7 +247,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		// 2. 先获取缓存中保存的单实例 Bean。如果能获取到说明这个Bean之前被创建过（所有单实例Bean都会被缓存起来）
 		//			private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
 		// 第一次获取单例Bean
-		Object sharedInstance = getSingleton(beanName);
+		Object sharedInstance = getSingleton(beanName); //Map<beanName, Object>
 		if (sharedInstance != null && args == null) { // Bean 存在
 			if (logger.isTraceEnabled()) {
 				if (isSingletonCurrentlyInCreation(beanName)) {
@@ -271,6 +272,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			// Check if bean definition exists in this factory.
 			// 3. 从缓存中拿不到，开始 Bean 创建流程
 			BeanFactory parentBeanFactory = getParentBeanFactory();
+			// 当前 BeanFactory 中得 beanName 对象得  BeanDefinition 那么则从 ParentBeanFactory 中区获取
 			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
 				// Not found -> check parent.
 				String nameToLookup = originalBeanName(name);
@@ -298,7 +300,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 
 			try {
-				// 5. 获取Bean的定义信息
+				// 5. 获取Bean的 BeanDefinition 合并后的定义信息 RootBeanDefinition
 				final RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 				checkMergedBeanDefinition(mbd, beanName, args);
 

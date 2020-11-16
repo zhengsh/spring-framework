@@ -1,5 +1,6 @@
 pluginManagement {
 	repositories {
+		maven { url "https://maven.aliyun.com/repository/public" }
 		gradlePluginPortal()
 		maven { url 'https://repo.spring.io/plugins-release' }
 	}
@@ -57,7 +58,7 @@ settings.gradle.projectsLoaded {
 			buildScanPublished { scan ->
 				if (buildDir.exists()) {
 					new File(buildDir, "build-scan-uri.txt").text = "${scan.buildScanUri}\n"
-				} 
+				}
 			}
 		}
 	}

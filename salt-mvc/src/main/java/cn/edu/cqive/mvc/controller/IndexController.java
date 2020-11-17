@@ -7,12 +7,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+/**
+ * spring mvc 测试控制器
+ *
+ * @author zhengsh
+ * @date 2020-11-17
+ */
 @Controller
 public class IndexController {
 
 	@RequestMapping("/")
-	public ModelAndView index(ModelMap modelMap){
-		modelMap.addAttribute("msg","Spring Mvc");
+	public ModelAndView index(ModelMap modelMap) {
+		modelMap.addAttribute("msg", "Spring Mvc");
 		return new ModelAndView("index");
 	}
 

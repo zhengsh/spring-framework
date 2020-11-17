@@ -11,6 +11,6 @@
     <title>Title</title>
 </head>
 <body>
-    <h2>index jsp</h2>
+    <h2>index jsp controller message ==> ${msg}</h2>
 </body>
 </html>

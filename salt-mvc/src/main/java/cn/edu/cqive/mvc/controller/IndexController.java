@@ -17,7 +17,10 @@ import org.springframework.web.servlet.ModelAndView;
 public class IndexController {
 
 	@RequestMapping("/")
-	public ModelAndView index(ModelMap modelMap) {
+	public ModelAndView index( ModelMap modelMap) {
+		if (new Object() instanceof Object) {
+
+		}
 		modelMap.addAttribute("msg", "Spring Mvc");
 		return new ModelAndView("index");
 	}

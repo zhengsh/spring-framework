@@ -217,22 +217,22 @@ configure(subprojects - project(":spring-build-src")) { subproject ->
 		}
 	}
 
-	javadoc {
-		description = "Generates project-level javadoc for use in -javadoc jar"
-
-		options.encoding = "UTF-8"
-		options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
-		options.author = true
-		options.header = project.name
-		options.use = true
-		options.links(project.ext.javadocLinks)
-		options.addStringOption("Xdoclint:none", "-quiet")
-
-		// Suppress warnings due to cross-module @see and @link references.
-		// Note that global 'api' task does display all warnings.
-		logging.captureStandardError LogLevel.INFO
-		logging.captureStandardOutput LogLevel.INFO  // suppress "## warnings" message
-	}
+//	javadoc {
+//		description = "Generates project-level javadoc for use in -javadoc jar"
+//
+//		options.encoding = "UTF-8"
+//		options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+//		options.author = true
+//		options.header = project.name
+//		options.use = true
+//		options.links(project.ext.javadocLinks)
+//		options.addStringOption("Xdoclint:none", "-quiet")
+//
+//		// Suppress warnings due to cross-module @see and @link references.
+//		// Note that global 'api' task does display all warnings.
+//		logging.captureStandardError LogLevel.INFO
+//		logging.captureStandardOutput LogLevel.INFO  // suppress "## warnings" message
+//	}
 
 	task sourcesJar(type: Jar, dependsOn: classes) {
 		duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -241,16 +241,16 @@ configure(subprojects - project(":spring-build-src")) { subproject ->
 		// Don't include or exclude anything explicitly by default. See SPR-12085.
 	}
 
-	task javadocJar(type: Jar) {
-		classifier = "javadoc"
-		from javadoc
-	}
+//	task javadocJar(type: Jar) {
+//		classifier = "javadoc"
+//		from javadoc
+//	}
 
 	//源码编译优化, 去掉一些与jar包构建无关的task 2020-11-14
-	artifacts {
+//	artifacts {
 //		archives sourcesJar
 //		archives javadocJar
-	}
+//	}
 }
 
 configure(rootProject) {
@@ -270,22 +270,23 @@ configure(rootProject) {
 	configurations.archives.artifacts.clear()
 
 	dependencies {  // for integration tests
-		testCompile(project(":spring-aop"))
-		testCompile(project(":spring-beans"))
-		testCompile(project(":spring-context"))
-		testCompile(project(":spring-core"))
-		testCompile(project(":spring-expression"))
-		testCompile(project(":spring-jdbc"))
-		testCompile(project(":spring-orm"))
-		testCompile(project(":spring-test"))
-		testCompile(project(":spring-tx"))
-		testCompile(project(":spring-web"))
-		testCompile("javax.inject:javax.inject:1")
-		testCompile("javax.resource:javax.resource-api:1.7.1")
-		testCompile("javax.servlet:javax.servlet-api:3.1.0")
-		testCompile("org.aspectj:aspectjweaver:${aspectjVersion}")
-		testCompile("org.hsqldb:hsqldb:${hsqldbVersion}")
-		testCompile("org.hibernate:hibernate-core:5.1.17.Final")
+// 关闭集成测试 2020-11-17
+//		testCompile(project(":spring-aop"))
+//		testCompile(project(":spring-beans"))
+//		testCompile(project(":spring-context"))
+//		testCompile(project(":spring-core"))
+//		testCompile(project(":spring-expression"))
+//		testCompile(project(":spring-jdbc"))
+//		testCompile(project(":spring-orm"))
+//		testCompile(project(":spring-test"))
+//		testCompile(project(":spring-tx"))
+//		testCompile(project(":spring-web"))
+//		testCompile("javax.inject:javax.inject:1")
+//		testCompile("javax.resource:javax.resource-api:1.7.1")
+//		testCompile("javax.servlet:javax.servlet-api:3.1.0")
+//		testCompile("org.aspectj:aspectjweaver:${aspectjVersion}")
+//		testCompile("org.hsqldb:hsqldb:${hsqldbVersion}")
+//		testCompile("org.hibernate:hibernate-core:5.1.17.Final")
 	}
 
 	//源码编译优化, 去掉一些与jar包构建无关的task 2020-11-14

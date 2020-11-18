@@ -11,9 +11,10 @@ repositories {
     mavenCentral()
 }
 
-//关闭测试任务
-check.dependsOn.remove(test)
+dependencies {
+    compile(project(":spring-context"))
+}
 
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
 }

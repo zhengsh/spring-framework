@@ -7,6 +7,7 @@ group 'org.springframework'
 version '5.1.14.BUILD-SNAPSHOT'
 
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 
 
@@ -34,11 +35,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     runtime 'javax.servlet:jstl:1.1.2' // Servlet容器必需
+    compile 'com.alibaba:fastjson:1.2.62'
+    compile(project(":salt-ioc"))
 
-    compile(project(":spring-core"))
-    compile(project(":spring-beans"))
-    compile(project(":spring-context"))
-    compile(project(":spring-webmvc"))
 
     // tomcat: 将Tomcat运行时库添加到配置tomcat中: (此处为Tomcat9)
     def tomcatVersion = '9.0.1'

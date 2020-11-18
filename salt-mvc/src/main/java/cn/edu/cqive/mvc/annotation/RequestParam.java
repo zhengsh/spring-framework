@@ -6,13 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 请求处理绑定 json 参数
- *
+ * 参绑定
  * @author zhengsh
- * @date 2020-11-17
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-public @interface RequestBody {
+@Target({ElementType.METHOD, ElementType.TYPE})
+public @interface RequestParam {
 	String value() default "";
 }

@@ -1,4 +1,4 @@
-package cn.edu.cqvie.spring.config;
+package cn.edu.cqvie.demo.config;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;

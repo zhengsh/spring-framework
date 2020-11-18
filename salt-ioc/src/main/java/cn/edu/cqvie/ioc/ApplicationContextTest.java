@@ -15,7 +15,7 @@ public class ApplicationContextTest {
      * 测试 bean 获取
      */
     public void getBean() {
-        AnnotationApplicationContext applicationContext = new AnnotationApplicationContext(AppConfig.class);
+        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
         OrderService orderService = (OrderService) applicationContext.getBean("orderService");
         System.out.println(orderService);
         orderService.test();

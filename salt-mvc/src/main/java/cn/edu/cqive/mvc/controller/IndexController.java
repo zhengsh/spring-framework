@@ -1,11 +1,10 @@
 package cn.edu.cqive.mvc.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
+import cn.edu.cqive.mvc.annotation.Controller;
+import cn.edu.cqive.mvc.annotation.RequestMapping;
+import cn.edu.cqive.mvc.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * spring mvc 测试控制器
@@ -17,15 +16,15 @@ import org.springframework.web.servlet.ModelAndView;
 public class IndexController {
 
 	@RequestMapping("/")
-	public ModelAndView index( ModelMap modelMap) {
+	public String index(HttpServletRequest request) {
 		if (new Object() instanceof Object) {
 
 		}
-		modelMap.addAttribute("msg", "Spring Mvc");
-		return new ModelAndView("index");
+		request.setAttribute("msg", "Spring Mvc");
+		return "index";
 	}
 
-	@GetMapping("/test")
+	@RequestMapping("/test")
 	@ResponseBody
 	public String test() {
 		return "Hello World!";

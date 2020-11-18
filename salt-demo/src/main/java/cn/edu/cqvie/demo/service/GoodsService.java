@@ -1,4 +1,4 @@
-package cn.edu.cqvie.spring.service;
+package cn.edu.cqvie.demo.service;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;

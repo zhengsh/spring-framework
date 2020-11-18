@@ -1,6 +1,6 @@
-package cn.edu.cqvie.spring.config;
+package cn.edu.cqvie.demo.config;
 
-import cn.edu.cqvie.spring.service.StockService;
+import cn.edu.cqvie.demo.service.StockService;
 import org.springframework.context.annotation.*;
 
 /**
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.*;
  * @date 2020-11-14
  */
 @Configuration
-@ComponentScan("cn.edu.cqvie.spring.service")
+@ComponentScan("cn.edu.cqvie.demo.service")
 //@Import(TestBeanPostProcessor.class)
 public class ApplicationConfig {
 

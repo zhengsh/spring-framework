@@ -1,4 +1,4 @@
-package cn.edu.cqvie.spring.service;
+package cn.edu.cqvie.demo.service;
 
 import org.springframework.stereotype.Component;
 

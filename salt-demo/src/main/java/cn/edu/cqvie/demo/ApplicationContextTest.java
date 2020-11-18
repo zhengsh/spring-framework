@@ -1,7 +1,7 @@
-package cn.edu.cqvie.spring;
+package cn.edu.cqvie.demo;
 
-import cn.edu.cqvie.spring.config.ApplicationConfig;
-import cn.edu.cqvie.spring.service.GoodsService;
+import cn.edu.cqvie.demo.config.ApplicationConfig;
+import cn.edu.cqvie.demo.service.GoodsService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**

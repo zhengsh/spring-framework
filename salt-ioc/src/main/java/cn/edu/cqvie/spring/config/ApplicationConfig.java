@@ -1,9 +1,7 @@
 package cn.edu.cqvie.spring.config;
 
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.ImportResource;
+import cn.edu.cqvie.spring.service.StockService;
+import org.springframework.context.annotation.*;
 
 /**
  * 测试 spring
@@ -15,4 +13,9 @@ import org.springframework.context.annotation.ImportResource;
 @ComponentScan("cn.edu.cqvie.spring.service")
 //@Import(TestBeanPostProcessor.class)
 public class ApplicationConfig {
+
+	@Bean
+	public StockService stockService200() {
+		return new StockService();
+	}
 }

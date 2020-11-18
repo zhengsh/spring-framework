@@ -1442,6 +1442,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 总结：
 			// spring 自动注入通过某个类的 set 方法来查找 bean, byName 就是根据某个 set 方法所对应的属性名去查找 bean
 			// byType 就是根据某个 set 方法的参数去找 bean
+			// 如果目前采用注解的方式，很少使用到
 		}
 
 		// 执行完成 Spring 的自动注入之后，就开始解析 @Autowired . 这里叫做实例化回调

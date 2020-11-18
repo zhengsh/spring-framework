@@ -95,7 +95,7 @@ import org.springframework.util.ReflectionUtils;
  * components.
  *
  * <p>This class is neither designed for extension nor intended to be extended.
- * It should be considered an internal type, with {@code WebApplicationInitializer}
+ * It should be considered an internal type, with {@code }
  * being the public-facing SPI.
  *
  * <h2>See Also</h2>

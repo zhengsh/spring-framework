@@ -103,74 +103,79 @@ public class AnnotationConfigApplicationContext implements ApplicationContext {
 	}
 
 	private void scan(Class<?> configClass) {
-		if (configClass.isAnnotationPresent(ComponentScan.class)) {
-			ComponentScan cs = configClass.getAnnotation(ComponentScan.class);
-			String[] values = cs.value();
-			for (String path : values) {
-				path = path.replace(".", "/");
+		try {
+			if (configClass.isAnnotationPresent(ComponentScan.class)) {
+				ComponentScan cs = configClass.getAnnotation(ComponentScan.class);
+				String[] values = cs.value();
+				for (String path : values) {
+					path = path.replace(".", "/");
 
-				ClassLoader classLoader = this.getClass().getClassLoader();
-				URL resource = classLoader.getResource(path);
-				assert resource != null;
-				File file = new File(resource.getFile());
-				for (File f : Objects.requireNonNull(file.listFiles())) {
-					String s = f.getAbsolutePath();
-					if (s.endsWith(".class")) {
-						s = s.substring(s.indexOf("cn"), s.indexOf(".class"));
-						s = s.replace("\\", ".");
-						System.out.println(s);
-					}
-					try {
-						Class<?> clazz = classLoader.loadClass(s);
-						System.out.println(clazz);
-						if (clazz.isAnnotationPresent(Component.class)) {
-							//扫描过程中创建 BeanPostProcessor 实例
-							if (clazz.isAssignableFrom(BeanPostProcessor.class)) {
-								BeanPostProcessor beanPostProcessor = (BeanPostProcessor) clazz.getDeclaredConstructor().newInstance();
-								beanPostProcessors.add(beanPostProcessor);
-							}
+					ClassLoader classLoader = this.getClass().getClassLoader();
+					URL resource = classLoader.getResource(path);
+					assert resource != null;
+					File file = new File(resource.getFile());
+					for (File f : Objects.requireNonNull(file.listFiles())) {
+						if (f.isDirectory()) {
+							// 忽略目录
+							continue;
+						}
+						String s = f.getAbsolutePath();
+						if (s.endsWith(".class")) {
+							//mac 写法
+							s = s.substring(s.indexOf("cn/edu"), s.indexOf(".class"));
+							s = s.replace("/", ".");
+							System.out.println(s);
+						}
+						try {
+							Class<?> clazz = classLoader.loadClass(s);
+							System.out.println(clazz);
+							if (clazz.isAnnotationPresent(Component.class)) {
+								//扫描过程中创建 BeanPostProcessor 实例
+								if (clazz.isAssignableFrom(BeanPostProcessor.class)) {
+									BeanPostProcessor beanPostProcessor = (BeanPostProcessor) clazz.getDeclaredConstructor().newInstance();
+									beanPostProcessors.add(beanPostProcessor);
+								}
 
-							Component component = clazz.getAnnotation(Component.class);
-							String beanName = component.value();
-							if ("".equals(beanName)) {
-								beanName = f.getName();
-								beanName = beanName.substring(0, beanName.indexOf(".class"));
-								beanName = beanName.substring(0, 1).toLowerCase() + beanName.substring(1);
-							}
+								Component component = clazz.getAnnotation(Component.class);
+								String beanName = component.value();
+								if ("".equals(beanName)) {
+									beanName = f.getName();
+									beanName = beanName.substring(0, beanName.indexOf(".class"));
+									beanName = beanName.substring(0, 1).toLowerCase() + beanName.substring(1);
+								}
 
-							BeanDefinition beanDefinition = new BeanDefinition();
-							beanDefinition.setBeanClass(clazz);
-							//这里是一个Bean
-							//判断是否是懒加载
-							if (clazz.isAnnotationPresent(Lazy.class)) {
-								beanDefinition.setLazy(true);
-							}
-							//是否是单例
-							if (clazz.isAnnotationPresent(Scope.class)) {
-								Scope scope = clazz.getAnnotation(Scope.class);
-								String value = scope.value();
-								if (!"".equals(value.trim())) {
-									beanDefinition.setScope(value);
+								BeanDefinition beanDefinition = new BeanDefinition();
+								beanDefinition.setBeanClass(clazz);
+								//这里是一个Bean
+								//判断是否是懒加载
+								if (clazz.isAnnotationPresent(Lazy.class)) {
+									beanDefinition.setLazy(true);
+								}
+								//是否是单例
+								if (clazz.isAnnotationPresent(Scope.class)) {
+									Scope scope = clazz.getAnnotation(Scope.class);
+									String value = scope.value();
+									if (!"".equals(value.trim())) {
+										beanDefinition.setScope(value);
+									} else {
+										beanDefinition.setScope("singleton");
+									}
 								} else {
 									beanDefinition.setScope("singleton");
 								}
-							} else {
-								beanDefinition.setScope("singleton");
+								beanDefinitionMap.put(beanName, beanDefinition);
 							}
-							beanDefinitionMap.put(beanName, beanDefinition);
+						} catch (Throwable t) {
+							throw t;
 						}
-					} catch (ClassNotFoundException | NoSuchMethodException e) {
-						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
-					} catch (InstantiationException e) {
-						e.printStackTrace();
-					} catch (InvocationTargetException e) {
-						e.printStackTrace();
 					}
 				}
 			}
+		} catch (
+				Throwable t) {
+			t.printStackTrace();
 		}
+
 	}
 
 	/**
@@ -201,11 +206,15 @@ public class AnnotationConfigApplicationContext implements ApplicationContext {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T> Map<String, T> getBeansOfType(Class<T> type) {
 		Map<String, T> map = new HashMap<>();
 		for (Map.Entry<String, BeanDefinition> e : beanDefinitionMap.entrySet()) {
 			if (e.getValue().getBeanClass().isAssignableFrom(type)) {
-				map.put(e.getKey(), (T) getBean(e.getKey()));
+				Object bean = getBean(e.getKey());
+				if (bean != null) {
+					map.put(e.getKey(), (T) bean);
+				}
 			}
 		}
 		return map;

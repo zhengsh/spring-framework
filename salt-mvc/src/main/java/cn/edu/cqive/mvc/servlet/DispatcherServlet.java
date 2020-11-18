@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
@@ -20,12 +21,17 @@ import java.util.Map;
  * @author zhengsh
  * @date 2020-11-18
  */
-public class DispatcherServlet extends HttpServlet {
+public class DispatcherServlet extends HttpServlet implements Serializable {
+
+	private static final long serialVersionUID = -2083503801443301445L;
 
 	private Collection<HandlerMapping> handlerMappings;
 	private Collection<HandlerAdapter> handlerAdapters;
 
-	private ApplicationContext applicationContext;
+	public static ApplicationContext applicationContext;
+
+	public DispatcherServlet() {
+	}
 
 	public DispatcherServlet(ApplicationContext applicationContext) {
 		//组件的初始化
@@ -86,5 +92,11 @@ public class DispatcherServlet extends HttpServlet {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public void init() throws ServletException {
+		super.init();
+		System.out.println("DispatcherServlet 被加载了 。。。。。。。");
 	}
 }

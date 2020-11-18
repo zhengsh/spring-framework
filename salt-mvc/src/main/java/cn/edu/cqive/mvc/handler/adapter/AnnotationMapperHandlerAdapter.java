@@ -3,6 +3,7 @@ package cn.edu.cqive.mvc.handler.adapter;
 import cn.edu.cqive.mvc.annotation.RequestBody;
 import cn.edu.cqive.mvc.annotation.RequestParam;
 import cn.edu.cqive.mvc.method.RequestMappingInfo;
+import cn.edu.cqvie.ioc.annotation.Component;
 import com.alibaba.fastjson.JSON;
 
 import javax.servlet.ServletException;
@@ -22,6 +23,7 @@ import java.util.Map;
  * @author zhengsh
  * @date 2020-11-18
  */
+@Component
 public class AnnotationMapperHandlerAdapter extends AbstractMapperHandlerAdapter {
 
 	/**
@@ -79,7 +81,7 @@ public class AnnotationMapperHandlerAdapter extends AbstractMapperHandlerAdapter
 			}
 		}
 		try {
-			Object result = method.invoke(rmi.getObject(), parameters);
+			Object result = method.invoke(rmi.getObject(), params);
 
 			//转发到json
 			if (result instanceof String) {
@@ -95,13 +97,7 @@ public class AnnotationMapperHandlerAdapter extends AbstractMapperHandlerAdapter
 				}
 			}
 			return result;
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (ServletException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (IllegalAccessException | ServletException | IOException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
 		return null;

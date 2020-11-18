@@ -1,11 +1,15 @@
 package cn.edu.cqive.mvc.handler;
 
 
+import cn.edu.cqive.mvc.annotation.Controller;
+import cn.edu.cqive.mvc.annotation.RequestMapping;
+import cn.edu.cqive.mvc.method.RequestMappingInfo;
 import cn.edu.cqvie.ioc.annotation.Component;
 import cn.edu.cqvie.ioc.processor.BeanPostProcessor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -17,19 +21,46 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class AnnotationHandlerMapping extends AbstractHandlerMapping implements BeanPostProcessor {
 
+	private Map<String, RequestMappingInfo> map = new HashMap<>();
+
 	@Override
 	public Object getHandlerMapping(String requestURI) {
-		return null;
+		return map.get(requestURI);
 	}
 
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) {
+
 		return null;
 	}
 
+	/**
+	 * Bean 里面会有多个处理器
+	 *
+	 * @param bean
+	 * @param beanName
+	 * @return
+	 */
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) {
-		if (bean.)
-		return null;
+		//1. 首先需要是被 @Controller 修饰
+		if (bean.getClass().isAnnotationPresent(Controller.class)) {
+			Method[] methods = bean.getClass().getDeclaredMethods();
+			for (Method m : methods) {
+				RequestMappingInfo rmi = createRequestMappingInfo(m, bean);
+				map.put(rmi.getUrl(), rmi);
+			}
+		}
+		return true;
+	}
+
+	private RequestMappingInfo createRequestMappingInfo(Method m, Object bean) {
+		RequestMappingInfo requestMappingInfo = new RequestMappingInfo();
+		if (m.isAnnotationPresent(RequestMapping.class)) {
+			requestMappingInfo.setMethod(m);
+			requestMappingInfo.setUrl(m.getDeclaredAnnotation(RequestMapping.class).value());
+			requestMappingInfo.setObject(bean);
+		}
+		return requestMappingInfo;
 	}
 }

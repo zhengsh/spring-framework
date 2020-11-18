@@ -34,5 +34,5 @@ include 'salt-ioc'
 //include 'salt-tx'
 //include 'salt-aop'
 include 'salt-mvc'
-include 'salt-demo'
+//include 'salt-demo'
 

@@ -1,9 +1,6 @@
 package cn.edu.cqive.mvc.controller;
 
-import cn.edu.cqive.mvc.annotation.Controller;
-import cn.edu.cqive.mvc.annotation.RequestMapping;
-import cn.edu.cqive.mvc.annotation.RequestParam;
-import cn.edu.cqive.mvc.annotation.ResponseBody;
+import cn.edu.cqive.mvc.annotation.*;
 import cn.edu.cqvie.ioc.annotation.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,8 +18,12 @@ import java.util.Map;
 public class IndexController {
 
 	@RequestMapping("/index")
-	public String index(@RequestParam("name") String name, HttpServletRequest request) {
+	public String index(@RequestBody Map<String, String> map,
+						@RequestParam("name") String name,
+						HttpServletRequest request) {
 		request.setAttribute("name", name);
+		request.setAttribute("map", map);
+
 		return "forward:/index.jsp";
 	}
 

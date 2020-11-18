@@ -2,6 +2,7 @@ package cn.edu.cqive.mvc.handler.adapter;
 
 import cn.edu.cqive.mvc.annotation.RequestBody;
 import cn.edu.cqive.mvc.annotation.RequestParam;
+import cn.edu.cqive.mvc.annotation.ResponseBody;
 import cn.edu.cqive.mvc.method.RequestMappingInfo;
 import cn.edu.cqvie.ioc.annotation.Component;
 import com.alibaba.fastjson.JSON;
@@ -70,14 +71,14 @@ public class AnnotationMapperHandlerAdapter extends AbstractMapperHandlerAdapter
 				}
 
 				//todo @RequestBody
+			}
 
-				//绑定 request, response
-				if (ServletRequest.class.isAssignableFrom(parameters[i].getType())) {
-					params[i] = request;
-				}
-				if (ServletResponse.class.isAssignableFrom(parameters[i].getType())) {
-					params[i] = response;
-				}
+			//绑定 request, response
+			if (ServletRequest.class.isAssignableFrom(parameters[i].getType())) {
+				params[i] = request;
+			}
+			if (ServletResponse.class.isAssignableFrom(parameters[i].getType())) {
+				params[i] = response;
 			}
 		}
 		try {
@@ -92,7 +93,7 @@ public class AnnotationMapperHandlerAdapter extends AbstractMapperHandlerAdapter
 				}
 			} else {
 				//如果被 @RequestBody 修饰，那么就返回 json 即对返回参数进行序列化
-				if (method.isAnnotationPresent(RequestBody.class)) {
+				if (method.isAnnotationPresent(ResponseBody.class)) {
 					return JSON.toJSONString(result);
 				}
 			}

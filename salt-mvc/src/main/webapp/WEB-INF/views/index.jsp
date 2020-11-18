@@ -11,6 +11,6 @@
     <title>Title</title>
 </head>
 <body>
-    <h2>index jsp controller message ==> ${msg}</h2>
+<h2> this is a first page , i haves a param[name] = ${name}</h2>
 </body>
 </html>

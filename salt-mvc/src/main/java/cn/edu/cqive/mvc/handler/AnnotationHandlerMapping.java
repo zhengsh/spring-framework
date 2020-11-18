@@ -21,7 +21,7 @@ import java.util.Map;
 @Component
 public class AnnotationHandlerMapping extends AbstractHandlerMapping implements BeanPostProcessor {
 
-	private Map<String, RequestMappingInfo> map = new HashMap<>();
+	private static Map<String, RequestMappingInfo> map = new HashMap<>();
 
 	@Override
 	public Object getHandlerMapping(String requestURI) {

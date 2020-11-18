@@ -9,8 +9,8 @@ import java.lang.annotation.Target;
  * 参绑定
  * @author zhengsh
  */
+@Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE})
 public @interface RequestParam {
 	String value() default "";
 }

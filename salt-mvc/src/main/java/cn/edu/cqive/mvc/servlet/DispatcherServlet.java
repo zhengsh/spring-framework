@@ -31,17 +31,12 @@ public class DispatcherServlet extends HttpServlet implements Serializable {
 	public static ApplicationContext applicationContext;
 
 	public DispatcherServlet() {
+
 	}
 
 	public DispatcherServlet(ApplicationContext applicationContext) {
 		//组件的初始化
 		this.applicationContext = applicationContext;
-
-		Map<String, HandlerMapping> handlerMappingMaps = applicationContext.getBeansOfType(HandlerMapping.class);
-		Map<String, HandlerAdapter> handlerAdapterMaps = applicationContext.getBeansOfType(HandlerAdapter.class);
-
-		handlerMappings = handlerMappingMaps.values();
-		handlerAdapters = handlerAdapterMaps.values();
 	}
 
 	@Override
@@ -85,9 +80,12 @@ public class DispatcherServlet extends HttpServlet implements Serializable {
 	private Object getHandlerMapping(HttpServletRequest req) {
 		if (this.handlerMappings != null) {
 			for (HandlerMapping hm : this.handlerMappings) {
-				Object handler = hm.getHandlerMapping(req.getRequestURI());
-				if (handler != null) {
-					return handler;
+				String uri = req.getRequestURI();
+				if (uri != null && uri.length() > 3) { //*.do 结尾所以最少长度为3
+					Object handler = hm.getHandlerMapping(uri.substring(0, uri.length() - 3));
+					if (handler != null) {
+						return handler;
+					}
 				}
 			}
 		}
@@ -97,6 +95,12 @@ public class DispatcherServlet extends HttpServlet implements Serializable {
 	@Override
 	public void init() throws ServletException {
 		super.init();
+		Map<String, HandlerMapping> handlerMappingMaps = applicationContext.getBeansOfType(HandlerMapping.class);
+		Map<String, HandlerAdapter> handlerAdapterMaps = applicationContext.getBeansOfType(HandlerAdapter.class);
+
+		handlerMappings = handlerMappingMaps.values();
+		handlerAdapters = handlerAdapterMaps.values();
+
 		System.out.println("DispatcherServlet 被加载了 。。。。。。。");
 	}
 }

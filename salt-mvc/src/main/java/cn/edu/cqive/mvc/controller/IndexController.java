@@ -3,6 +3,7 @@ package cn.edu.cqive.mvc.controller;
 import cn.edu.cqive.mvc.annotation.Controller;
 import cn.edu.cqive.mvc.annotation.RequestMapping;
 import cn.edu.cqive.mvc.annotation.ResponseBody;
+import cn.edu.cqvie.ioc.annotation.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,10 +13,11 @@ import javax.servlet.http.HttpServletRequest;
  * @author zhengsh
  * @date 2020-11-17
  */
+@Component
 @Controller
 public class IndexController {
 
-	@RequestMapping("/")
+	@RequestMapping("/index")
 	public String index(HttpServletRequest request) {
 		if (new Object() instanceof Object) {
 

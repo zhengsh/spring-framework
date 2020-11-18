@@ -131,7 +131,8 @@ public class AnnotationConfigApplicationContext implements ApplicationContext {
 							System.out.println(clazz);
 							if (clazz.isAnnotationPresent(Component.class)) {
 								//扫描过程中创建 BeanPostProcessor 实例
-								if (clazz.isAssignableFrom(BeanPostProcessor.class)) {
+								//if (clazz.isAssignableFrom(BeanPostProcessor.class)) {
+								if (BeanPostProcessor.class.isAssignableFrom(clazz)) {
 									BeanPostProcessor beanPostProcessor = (BeanPostProcessor) clazz.getDeclaredConstructor().newInstance();
 									beanPostProcessors.add(beanPostProcessor);
 								}
@@ -210,12 +211,21 @@ public class AnnotationConfigApplicationContext implements ApplicationContext {
 	public <T> Map<String, T> getBeansOfType(Class<T> type) {
 		Map<String, T> map = new HashMap<>();
 		for (Map.Entry<String, BeanDefinition> e : beanDefinitionMap.entrySet()) {
+			Object bean = null;
 			if (e.getValue().getBeanClass().isAssignableFrom(type)) {
-				Object bean = getBean(e.getKey());
+				bean = getBean(e.getKey());
 				if (bean != null) {
 					map.put(e.getKey(), (T) bean);
 				}
 			}
+			if (bean == null) {
+				bean = getBean(e.getKey());
+				// 父类 isAssignableFrom 子类
+				if (type.isAssignableFrom(bean.getClass())) {
+					map.put(e.getKey(), (T) bean);
+				}
+			}
+
 		}
 		return map;
 	}

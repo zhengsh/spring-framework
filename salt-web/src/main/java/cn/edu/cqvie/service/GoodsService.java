@@ -3,6 +3,7 @@ package cn.edu.cqvie.service;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -22,8 +23,13 @@ public class GoodsService implements InitializingBean, ApplicationContextAware {
 	@Autowired
 	private StockService stockService;
 
+	@Autowired
+	//@Value("${test.val}")
+	private String valStr;
+
 	public void test() {
 		System.out.println("goodsService.test invoker! ");
+		System.out.println("goodsService.test valStr! " + valStr);
 
 		stockService.test();
 	}

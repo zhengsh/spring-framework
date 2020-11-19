@@ -1,7 +1,4 @@
-package cn.edu.cqive.mvc.handler;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+package cn.edu.cqvie.mvc.handler;
 
 /**
  * 事件映射器

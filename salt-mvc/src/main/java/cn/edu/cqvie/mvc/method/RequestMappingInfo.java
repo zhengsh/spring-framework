@@ -1,4 +1,4 @@
-package cn.edu.cqive.mvc.method;
+package cn.edu.cqvie.mvc.method;
 
 import java.lang.reflect.Method;
 

@@ -1,4 +1,4 @@
-package cn.edu.cqive.mvc.annotation;
+package cn.edu.cqvie.mvc.annotation;
 
 import cn.edu.cqvie.ioc.annotation.Component;
 

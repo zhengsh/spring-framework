@@ -1,4 +1,4 @@
-package cn.edu.cqive.mvc.handler;
+package cn.edu.cqvie.mvc.handler;
 
 /**
  * 请求处理绑定 json 参数

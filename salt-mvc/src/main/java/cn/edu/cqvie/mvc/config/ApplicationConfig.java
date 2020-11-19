@@ -1,4 +1,4 @@
-package cn.edu.cqive.mvc.config;
+package cn.edu.cqvie.mvc.config;
 
 
 import cn.edu.cqvie.ioc.annotation.ComponentScan;
@@ -9,8 +9,8 @@ import cn.edu.cqvie.ioc.annotation.ComponentScan;
  * @author zhengsh
  */
 @ComponentScan({
-		"cn.edu.cqive.mvc.controller",
-		"cn.edu.cqive.mvc.handler",
-		"cn.edu.cqive.mvc.handler.adapter"})
+		"cn.edu.cqvie.mvc.controller",
+		"cn.edu.cqvie.mvc.handler",
+		"cn.edu.cqvie.mvc.handler.adapter"})
 public class ApplicationConfig {
 }

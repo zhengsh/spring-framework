@@ -40,14 +40,8 @@ dependencies {
     compile(project(":spring-webmvc"))
 
     // tomcat: 将Tomcat运行时库添加到配置tomcat中: (此处为Tomcat9)
-    def tomcatVersion = '9.0.1'
+    def tomcatVersion = '8.0.27'
     tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
-            "org.apache.tomcat.embed:tomcat-embed-logging-juli:9.0.0.M6",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
             "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"
-}
-
-// tomcat: 一些协议设置（注意，这里必须加上，不然会抛tomcat的异常，仅限tomcat9）
-tomcat {
-    httpProtocol = 'org.apache.coyote.http11.Http11Nio2Protocol'
-    ajpProtocol = 'org.apache.coyote.ajp.AjpNio2Protocol'
 }

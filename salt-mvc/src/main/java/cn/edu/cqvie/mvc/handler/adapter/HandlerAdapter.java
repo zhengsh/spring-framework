@@ -1,4 +1,4 @@
-package cn.edu.cqive.mvc.handler.adapter;
+package cn.edu.cqvie.mvc.handler.adapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

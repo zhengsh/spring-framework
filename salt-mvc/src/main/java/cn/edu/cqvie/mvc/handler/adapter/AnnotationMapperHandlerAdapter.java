@@ -1,9 +1,8 @@
-package cn.edu.cqive.mvc.handler.adapter;
+package cn.edu.cqvie.mvc.handler.adapter;
 
-import cn.edu.cqive.mvc.annotation.RequestBody;
-import cn.edu.cqive.mvc.annotation.RequestParam;
-import cn.edu.cqive.mvc.annotation.ResponseBody;
-import cn.edu.cqive.mvc.method.RequestMappingInfo;
+import cn.edu.cqvie.mvc.annotation.RequestParam;
+import cn.edu.cqvie.mvc.annotation.ResponseBody;
+import cn.edu.cqvie.mvc.method.RequestMappingInfo;
 import cn.edu.cqvie.ioc.annotation.Component;
 import com.alibaba.fastjson.JSON;
 

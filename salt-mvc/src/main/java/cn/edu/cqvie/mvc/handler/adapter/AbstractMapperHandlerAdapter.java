@@ -1,4 +1,4 @@
-package cn.edu.cqive.mvc.handler.adapter;
+package cn.edu.cqvie.mvc.handler.adapter;
 
 /**
  * 事件适配器

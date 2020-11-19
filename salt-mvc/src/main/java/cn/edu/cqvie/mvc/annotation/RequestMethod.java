@@ -1,4 +1,4 @@
-package cn.edu.cqive.mvc.annotation;
+package cn.edu.cqvie.mvc.annotation;
 
 /**
  * 请求类型枚举

@@ -104,16 +104,20 @@ public class AnnotationConfigApplicationContext implements ApplicationContext {
 		return null;
 	}
 
+
+
 	private void scan(Class<?> configClass) {
 		try {
 			if (configClass.isAnnotationPresent(ComponentScan.class)) {
 				ComponentScan cs = configClass.getAnnotation(ComponentScan.class);
 				String[] values = cs.value();
 				for (String path : values) {
+					//这里是 // 分隔资源， 为 ClassLoader#getResource 使用
 					path = path.replaceAll("\\.", "//");
 
 					ClassLoader classLoader = this.getClass().getClassLoader();
 					URL resource = classLoader.getResource(path);
+					assert resource != null;
 					File file = new File(resource.getFile());
 					File[] files = file.listFiles(pathName -> {
 						if (pathName.isDirectory()) {    //判断是否是目录
@@ -123,10 +127,6 @@ public class AnnotationConfigApplicationContext implements ApplicationContext {
 					});
 					if (files != null) {
 						for (File f : files) {
-							if (f.isDirectory()) {
-								// 忽略目录
-								continue;
-							}
 							String s = f.getAbsolutePath();
 							if (s.endsWith(".class")) {
 								//mac 写法

@@ -28,7 +28,7 @@ public class DispatcherServlet extends HttpServlet implements Serializable {
 	private Collection<HandlerMapping> handlerMappings;
 	private Collection<HandlerAdapter> handlerAdapters;
 
-	public static ApplicationContext applicationContext;
+	public ApplicationContext applicationContext;
 
 	public DispatcherServlet() {
 

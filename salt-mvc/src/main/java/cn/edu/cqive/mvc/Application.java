@@ -9,6 +9,7 @@ import org.apache.catalina.Wrapper;
 import org.apache.catalina.startup.Tomcat;
 
 import javax.servlet.ServletContext;
+import java.util.Objects;
 
 /**
  * @author ZAKJ_ASUS
@@ -22,10 +23,13 @@ public class Application {
 		tomcat.setPort(9090);
 
 		// web应用可以添加绝对目录
-		Context context = tomcat.addWebapp("/", "/Users/zhengsh/cqvie.edu.cn/spring-framework/salt-mvc/src/main/webapp");
+		Context context = tomcat.addWebapp("/",
+				"D:\\SourceCode\\spring-framework\\salt-mvc\\src\\main\\webapp"
+				//"/Users/zhengsh/cqvie.edu.cn/spring-framework/salt-mvc/src/main/webapp"
+		);
 		ApplicationContext ac = new AnnotationConfigApplicationContext(ApplicationConfig.class);
 
-		Wrapper wrapper = tomcat.addServlet(context, "dispatcherServlet", new DispatcherServlet(ac));
+		Wrapper wrapper = Tomcat.addServlet(context, "dispatcherServlet", new DispatcherServlet(ac));
 		wrapper.setLoadOnStartup(1);
 		wrapper.addMapping("*.do");
 

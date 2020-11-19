@@ -1,5 +1,6 @@
 buildscript {
 	repositories {
+		maven{ url'http://maven.aliyun.com/nexus/content/groups/public/'}
 		maven { url "https://repo.spring.io/plugins-release" }
 	}
 	dependencies {
@@ -113,38 +114,38 @@ configure(allprojects) { project ->
 		options.compilerArgs += "-parameters"
 	}
 
-	compileKotlin {
-		kotlinOptions {
-			jvmTarget = "1.8"
-			freeCompilerArgs = ["-Xjsr305=strict"]
-			apiVersion = "1.1"
-			languageVersion = "1.1"
-		}
-	}
-
-	compileTestKotlin {
-		kotlinOptions {
-			jvmTarget = "1.8"
-			freeCompilerArgs = ["-Xjsr305=strict"]
-		}
-	}
-
-	test {
-		systemProperty("java.awt.headless", "true")
-		systemProperty("testGroups", project.properties.get("testGroups"))
-		systemProperty("io.netty.leakDetection.level", "paranoid")
-		scanForTestClasses = false
-		include(["**/*Tests.class", "**/*Test.class"])
-		// Since we set scanForTestClasses to false, we need to filter out inner
-		// classes with the "$" pattern; otherwise, using -Dtest.single=MyTests to
-		// run MyTests by itself will fail if MyTests contains any inner classes.
-		exclude(["**/Abstract*.class", '**/*$*'])
-	}
-
-	checkstyle {
-		toolVersion = "8.29"
-		configDir = rootProject.file("src/checkstyle")
-	}
+//	compileKotlin {
+//		kotlinOptions {
+//			jvmTarget = "1.8"
+//			freeCompilerArgs = ["-Xjsr305=strict"]
+//			apiVersion = "1.1"
+//			languageVersion = "1.1"
+//		}
+//	}
+//
+//	compileTestKotlin {
+//		kotlinOptions {
+//			jvmTarget = "1.8"
+//			freeCompilerArgs = ["-Xjsr305=strict"]
+//		}
+//	}
+//
+//	test {
+//		systemProperty("java.awt.headless", "true")
+//		systemProperty("testGroups", project.properties.get("testGroups"))
+//		systemProperty("io.netty.leakDetection.level", "paranoid")
+//		scanForTestClasses = false
+//		include(["**/*Tests.class", "**/*Test.class"])
+//		// Since we set scanForTestClasses to false, we need to filter out inner
+//		// classes with the "$" pattern; otherwise, using -Dtest.single=MyTests to
+//		// run MyTests by itself will fail if MyTests contains any inner classes.
+//		exclude(["**/Abstract*.class", '**/*$*'])
+//	}
+//
+//	checkstyle {
+//		toolVersion = "8.29"
+//		configDir = rootProject.file("src/checkstyle")
+//	}
 
 	repositories {
 		//添加国内镜像
@@ -199,6 +200,7 @@ configure(allprojects) { project ->
 	] as String[]
 }
 
+/*
 configure(subprojects - project(":spring-build-src")) { subproject ->
 	apply from: "${gradleScriptDir}/publish-maven.gradle"
 
@@ -309,6 +311,7 @@ configure(rootProject) {
 		}
 	}
 }
+*/
 
 dependencies {
 	implementation 'org.junit.jupiter:junit-jupiter:5.5.0'

@@ -1,5 +1,7 @@
 package cn.edu.cqvie.controller;
 
+import cn.edu.cqvie.service.GoodsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,9 +20,13 @@ import java.util.Map;
 @Controller
 public class IndexController {
 
+	@Autowired
+	private GoodsService goodsService;
+
 	@RequestMapping("/index")
 	public String index(@RequestParam("name") String name, HttpServletRequest request) {
 		request.setAttribute("name", name);
+		goodsService.test();
 
 		return "index";
 	}

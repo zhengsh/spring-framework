@@ -82,3 +82,12 @@ Server  --> Service --> Connector Engine (addChild) --> context (servlet 容器)
 在启动过程中回去扫描特定目录，相对路径（META-INF/services + 接口全限定名): 实现类
 
 - Servlet 3.0 的核心是实现 ServletContainerInitializer ba 调用 onStartup
+
+## Spring 的启动过程和核心类
+1. Spring mvc 和 Spring Context
+- 子容器可以查找父容器，父容器不能查找子容器
+
+### ContextLoaderListener
+1. 
+
+### DispatcherServlet

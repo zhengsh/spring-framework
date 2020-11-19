@@ -594,15 +594,18 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 			Field field = (Field) this.member;
 			Object value;
 			if (this.cached) {
+				// 当前注入点已经注入过了，有缓存了，则利用 cachedFieldValue 去查找对应的 bean
 				value = resolvedCachedArgument(beanName, this.cachedFieldValue);
 			}
 			else {
+				// Spring 在真正查找属性对应的对象之前，会先将属性的描述封装成一个 DependencyDescriptor，里面保存属性 方法 和元数据信息
 				DependencyDescriptor desc = new DependencyDescriptor(field, this.required);
 				desc.setContainingClass(bean.getClass());
 				Set<String> autowiredBeanNames = new LinkedHashSet<>(1);
 				Assert.state(beanFactory != null, "No BeanFactory available");
 				TypeConverter typeConverter = beanFactory.getTypeConverter();
 				try {
+					// 根据 field 去寻找合适的 bean
 					value = beanFactory.resolveDependency(desc, beanName, autowiredBeanNames, typeConverter);
 				}
 				catch (BeansException ex) {

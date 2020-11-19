@@ -1,0 +1,11 @@
+cn.edu.cqvie.ioc
+cn.edu.cqvie.ioc.annotation
+cn.edu.cqvie.ioc.aware
+cn.edu.cqvie.ioc.bean
+cn.edu.cqvie.ioc.config
+cn.edu.cqvie.ioc.processor
+cn.edu.cqvie.ioc.service
+cn.edu.cqvie.spring
+cn.edu.cqvie.spring.config
+cn.edu.cqvie.spring.service
+cn.edu.cqvie.spring.xml

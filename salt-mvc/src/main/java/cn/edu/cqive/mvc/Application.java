@@ -26,8 +26,8 @@ public class Application {
 		ApplicationContext ac = new AnnotationConfigApplicationContext(ApplicationConfig.class);
 
 		Wrapper wrapper = tomcat.addServlet(context, "dispatcherServlet", new DispatcherServlet(ac));
-		wrapper.setLoadOnStartup(1);
-		wrapper.addMapping("*.do");
+		wrapper.setLoadOnStartup(1);//如果不设置，默认懒加载
+		wrapper.addMapping("/");
 
 		tomcat.start();
 		tomcat.getServer().await();

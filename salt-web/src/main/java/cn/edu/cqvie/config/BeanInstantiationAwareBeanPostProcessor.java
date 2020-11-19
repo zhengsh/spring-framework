@@ -1,6 +1,6 @@
-package cn.edu.cqvie.demo.config;
+package cn.edu.cqvie.config;
 
-import cn.edu.cqvie.demo.service.GoodsService;
+import cn.edu.cqvie.service.GoodsService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.springframework.stereotype.Component;

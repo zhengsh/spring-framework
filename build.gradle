@@ -200,7 +200,7 @@ configure(allprojects) { project ->
 	] as String[]
 }
 
-/*
+
 configure(subprojects - project(":spring-build-src")) { subproject ->
 	apply from: "${gradleScriptDir}/publish-maven.gradle"
 
@@ -311,7 +311,7 @@ configure(rootProject) {
 		}
 	}
 }
-*/
+
 
 dependencies {
 	implementation 'org.junit.jupiter:junit-jupiter:5.5.0'

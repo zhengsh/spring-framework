@@ -1,6 +1,6 @@
-package cn.edu.cqvie.demo.xml;
+package cn.edu.cqvie.xml;
 
-import cn.edu.cqvie.demo.service.GoodsService;
+import cn.edu.cqvie.service.GoodsService;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**

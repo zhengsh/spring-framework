@@ -8,7 +8,7 @@
 
 	<!--此文件负责整个mvc中的配置-->
 	<!-- 自动扫描装配,开启组件扫描，请确保所有的控制器都在基本包下，并且不要制定一个太宽泛的基本包 -->
-	<context:component-scan base-package="cn.edu.cqive.mvc.controller"/>
+	<context:component-scan base-package="cn.edu.cqvie.controller"/>
 	<!--启用spring的一些annotation -->
 	<context:annotation-config/>
 	<!-- 配置注解驱动 可以将request参数与绑定到controller参数上 -->

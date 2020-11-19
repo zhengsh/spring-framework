@@ -24,7 +24,7 @@ public class GoodsService implements InitializingBean, ApplicationContextAware {
 	private StockService stockService;
 
 	@Autowired
-	//@Value("${test.val}")
+	@Value("${test.val}")
 	private String valStr;
 
 	public void test() {

@@ -504,6 +504,7 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 			return this;
 		}
 
+		//再次封装成对应的对象    面向对象编程  每一个属性都存在多个值得情况需要排重封装
 		@Override
 		public RequestMappingInfo build() {
 			ContentNegotiationManager manager = this.options.getContentNegotiationManager();

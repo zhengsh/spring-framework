@@ -101,7 +101,9 @@ public class SimpleUrlHandlerMapping extends AbstractUrlHandlerMapping {
 	 */
 	@Override
 	public void initApplicationContext() throws BeansException {
+		//加载拦截器
 		super.initApplicationContext();
+		// 处理url和bean name，具体注册调用父类AbstractUrlHandlerMapping类完成
 		registerHandlers(this.urlMap);
 	}
 

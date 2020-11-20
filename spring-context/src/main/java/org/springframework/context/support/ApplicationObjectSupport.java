@@ -46,6 +46,7 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @see org.springframework.web.context.support.WebApplicationObjectSupport
  */
+//向上继承自ApplicationObjectSupport实现ApplicationContextAware接口
 public abstract class ApplicationObjectSupport implements ApplicationContextAware {
 
 	/** Logger that is available to subclasses. */
@@ -75,7 +76,7 @@ public abstract class ApplicationObjectSupport implements ApplicationContextAwar
 			}
 			this.applicationContext = context;
 			this.messageSourceAccessor = new MessageSourceAccessor(context);
-			initApplicationContext(context);
+			initApplicationContext(context); //模板方法，调子类
 		}
 		else {
 			// Ignore reinitialization if same context passed in.

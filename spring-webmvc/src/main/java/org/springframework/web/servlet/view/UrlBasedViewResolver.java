@@ -102,7 +102,6 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	 */
 	public static final String FORWARD_URL_PREFIX = "forward:";
 
-
 	@Nullable
 	private Class<?> viewClass;
 

@@ -88,6 +88,20 @@ Server  --> Service --> Connector Engine (addChild) --> context (servlet 容器)
 - 子容器可以查找父容器，父容器不能查找子容器
 
 ### ContextLoaderListener
-1. 
 
 ### DispatcherServlet
+
+### 配置 MVC 的消息转换器
+- WebMvcConfigurer
+- WebMvcConfigurerAdapter    
+  * WebMvcConfigurer
+- WebMvcConfigurationSupport 
+  * 需要继承这个类, 然后去设置 @Configuration
+- @EnableWebMvc
+ 
+自定义转换器
+* @EnableWebMvc + 实现 WebMvcConfigurer 接口
+* @EnableWebMvc + 继承 WebMvcConfigurationSupport
+注意： 如果定义 @EnableWebMvc spring mvc 的自动装配会失效
+
+### 分析 spring mvc refresh 原因分析

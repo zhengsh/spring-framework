@@ -10,8 +10,8 @@ import org.springframework.context.annotation.*;
  * @date 2020-11-14
  */
 @Configuration
-@ComponentScan("cn.edu.cqvie.service")
-@PropertySource(value="classpath:/application.properties")
+@ComponentScan({"cn.edu.cqvie.service", "cn.edu.cqvie.controller"})
+@PropertySource(value = "classpath:/application.properties")
 //@Import(TestBeanPostProcessor.class)
 public class ApplicationConfig {
 
@@ -24,4 +24,6 @@ public class ApplicationConfig {
 	public String valStr() {
 		return "@Bean valStr";
 	}
+
+
 }

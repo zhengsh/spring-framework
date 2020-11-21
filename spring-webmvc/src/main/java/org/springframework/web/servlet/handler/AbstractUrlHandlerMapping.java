@@ -332,9 +332,13 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 		Object resolvedHandler = handler;
 
 		// Eagerly resolve handler if referencing singleton via name.
+		// 不是懒加载，默认为false，即不是，通过配置SimpleUrlHandlerMapping属性lazyInitHandlers的值进行控制
+		// 如果不是懒加载并且handler为单例，即从上下文中查询实例处理，此时resolvedHandler为handler实例对象；
+		// 如果是懒加载或者handler不是单例，即resolvedHandler为handler逻辑名
 		if (!this.lazyInitHandlers && handler instanceof String) {
 			String handlerName = (String) handler;
 			ApplicationContext applicationContext = obtainApplicationContext();
+			// 如果handler是单例，通过bean的scope控制
 			if (applicationContext.isSingleton(handlerName)) {
 				resolvedHandler = applicationContext.getBean(handlerName);
 			}
@@ -362,6 +366,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 				setDefaultHandler(resolvedHandler);
 			}
 			else {
+				// 把url与handler（名称或实例）放入map，以供后续使用
 				this.handlerMap.put(urlPath, resolvedHandler);
 				if (logger.isTraceEnabled()) {
 					logger.trace("Mapped [" + urlPath + "] onto " + getHandlerDescription(handler));

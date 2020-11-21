@@ -188,6 +188,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 		urlPath = prependLeadingSlash(urlPath);
 		PathPattern pattern = getPathPatternParser().parse(urlPath);
 		if (this.handlerMap.containsKey(pattern)) {
+			//已存在且指向不同的Handler抛异常
 			Object existingHandler = this.handlerMap.get(pattern);
 			if (existingHandler != null && existingHandler != resolvedHandler) {
 				throw new IllegalStateException(
@@ -205,7 +206,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 		}
 
 		// Register resolved handler
-		this.handlerMap.put(pattern, resolvedHandler);
+		this.handlerMap.put(pattern, resolvedHandler); ;//注册进map
 		if (logger.isTraceEnabled()) {
 			logger.trace("Mapped [" + urlPath + "] onto " + getHandlerDescription(handler));
 		}

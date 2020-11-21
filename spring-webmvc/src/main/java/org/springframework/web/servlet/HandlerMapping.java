@@ -22,7 +22,7 @@ import org.springframework.lang.Nullable;
 
 /**
  * Interface to be implemented by objects that define a mapping between
- * requests and handler objects.
+ * requests and handler objects.。
  *
  * <p>This class can be implemented by application developers, although this is not
  * necessary, as {@link org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping}
@@ -53,11 +53,18 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping
  * @see org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
  */
+//1.定义映射关系与处理对象的接口
+//2.可以自定义实现，提供了两个实现 BeanNameUrlHandlerMapping（默认）、RequestMappingHandlerMapping
+//3.该接口只有一个方法getHandler(request)，返回一个HandlerExecutionChain对象
+//4.参数化映射的功能是 mvc 框架强大的特征，可以写基于 session 状态，cookie 状态的自定义变量
+//5.注意： Ordered 实现排序，如果不指定默认最低优先级
+
 public interface HandlerMapping {
 
 	/**
 	 * Name of the {@link HttpServletRequest} attribute that contains the mapped
 	 * handler for the best matching pattern.
+	 *
 	 * @since 4.3.21
 	 */
 	String BEST_MATCHING_HANDLER_ATTRIBUTE = HandlerMapping.class.getName() + ".bestMatchingHandler";
@@ -130,6 +137,7 @@ public interface HandlerMapping {
 	 * <p>Returns {@code null} if no match was found. This is not an error.
 	 * The DispatcherServlet will query all registered HandlerMapping beans to find
 	 * a match, and only decide there is an error if none can find a handler.
+	 *
 	 * @param request current HTTP request
 	 * @return a HandlerExecutionChain instance containing handler object and
 	 * any interceptors, or {@code null} if no mapping found

@@ -169,10 +169,12 @@ public class HandlerMappingIntrospector
 
 
 	private static List<HandlerMapping> initHandlerMappings(ApplicationContext applicationContext) {
+		//在 ApplicationContext 中查找所有的 HandlerMapping， 包括父级上下文中查找
 		Map<String, HandlerMapping> beans = BeanFactoryUtils.beansOfTypeIncludingAncestors(
 				applicationContext, HandlerMapping.class, true, false);
 		if (!beans.isEmpty()) {
 			List<HandlerMapping> mappings = new ArrayList<>(beans.values());
+			//排序，可以通过指定 Order 属性进行设置 order 的值为 int 类型，值越小优先级越高
 			AnnotationAwareOrderComparator.sort(mappings);
 			return Collections.unmodifiableList(mappings);
 		}

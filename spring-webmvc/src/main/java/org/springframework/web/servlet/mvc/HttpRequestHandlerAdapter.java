@@ -40,11 +40,13 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public class HttpRequestHandlerAdapter implements HandlerAdapter {
 
+	//判断handler是否是HttpRequestHandler
 	@Override
 	public boolean supports(Object handler) {
 		return (handler instanceof HttpRequestHandler);
 	}
 
+	//执行HttpRequestHandler.handleRequest方法
 	@Override
 	@Nullable
 	public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -54,6 +56,7 @@ public class HttpRequestHandlerAdapter implements HandlerAdapter {
 		return null;
 	}
 
+	//直接返回-1
 	@Override
 	public long getLastModified(HttpServletRequest request, Object handler) {
 		if (handler instanceof LastModified) {

@@ -37,13 +37,16 @@ import org.springframework.web.servlet.ModelAndView;
  * @see LastModified
  * @see HttpRequestHandlerAdapter
  */
+//是Controller实现类的适配器类，其本质是执行Controller中的handleRequest方法。
 public class SimpleControllerHandlerAdapter implements HandlerAdapter {
 
+	//方法就是判断handler是否是Controller
 	@Override
 	public boolean supports(Object handler) {
 		return (handler instanceof Controller);
 	}
 
+//	Controller.handleRequest方法。
 	@Override
 	@Nullable
 	public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -52,6 +55,7 @@ public class SimpleControllerHandlerAdapter implements HandlerAdapter {
 		return ((Controller) handler).handleRequest(request, response);
 	}
 
+	//直接返回-1
 	@Override
 	public long getLastModified(HttpServletRequest request, Object handler) {
 		if (handler instanceof LastModified) {

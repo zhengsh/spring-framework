@@ -641,18 +641,23 @@ public class DispatcherServlet extends FrameworkServlet {
 	private void initHandlerMappings(ApplicationContext context) {
 		this.handlerMappings = null;
 
+		//默认为 true 可以通过 DispatcherServlet 的 init-param 参数进行设置
 		if (this.detectAllHandlerMappings) {
 			// Find all HandlerMappings in the ApplicationContext, including ancestor contexts.
+			//在 ApplicationContext 中查找所有的 HandlerMapping， 包括父级上下文中查找
 			Map<String, HandlerMapping> matchingBeans =
 					BeanFactoryUtils.beansOfTypeIncludingAncestors(context, HandlerMapping.class, true, false);
 			if (!matchingBeans.isEmpty()) {
 				this.handlerMappings = new ArrayList<>(matchingBeans.values());
 				// We keep HandlerMappings in sorted order.
+				//排序，可以通过指定 Order 属性进行设置 order 的值为 int 类型，值越小优先级越高
 				AnnotationAwareOrderComparator.sort(this.handlerMappings);
 			}
 		} else {
 			try {
+				//从 Application 中取 id 或者 name 等于  handlerMapping 的 bean
 				HandlerMapping hm = context.getBean(HANDLER_MAPPING_BEAN_NAME, HandlerMapping.class);
+				//将 hm 转换成 list 并赋值给 handlerMappings
 				this.handlerMappings = Collections.singletonList(hm);
 			} catch (NoSuchBeanDefinitionException ex) {
 				// Ignore, we'll add a default HandlerMapping later.
@@ -661,6 +666,10 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		// Ensure we have at least one HandlerMapping, by registering
 		// a default HandlerMapping if no other mappings are found.
+		//如果没有自定义使用的 handlerMappings
+		//默认的 HandlerMapping 定义在 DispatcherServlet.properties 属性文件中
+		//该文件是在 DispatcherServlet 的 static 代码块中加载额
+		//默认的是： BeanNameUrlHandlerMapping 和 RequestMappingHandlerMapping
 		if (this.handlerMappings == null) {
 			this.handlerMappings = getDefaultStrategies(context, HandlerMapping.class);
 			if (logger.isTraceEnabled()) {
@@ -680,6 +689,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		if (this.detectAllHandlerAdapters) {
 			// Find all HandlerAdapters in the ApplicationContext, including ancestor contexts.
+			// 从应用上下文中查找HandlerAdapter
 			Map<String, HandlerAdapter> matchingBeans =
 					BeanFactoryUtils.beansOfTypeIncludingAncestors(context, HandlerAdapter.class, true, false);
 			if (!matchingBeans.isEmpty()) {
@@ -689,7 +699,9 @@ public class DispatcherServlet extends FrameworkServlet {
 			}
 		} else {
 			try {
+				//如果在web.xml配了detectAllHandlerAdapters=false，此时spring会加载名称为handlerAdapter的bean为处理器适配器
 				HandlerAdapter ha = context.getBean(HANDLER_ADAPTER_BEAN_NAME, HandlerAdapter.class);
+				// 转化为集合赋给handlerAdapters属性
 				this.handlerAdapters = Collections.singletonList(ha);
 			} catch (NoSuchBeanDefinitionException ex) {
 				// Ignore, we'll add a default HandlerAdapter later.
@@ -698,6 +710,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		// Ensure we have at least some HandlerAdapters, by registering
 		// default HandlerAdapters if no other adapters are found.
+		//如果未配置，读取DispatcherServlet.properties中的HandlerAdapters,放入this.handlerAdapters
 		if (this.handlerAdapters == null) {
 			this.handlerAdapters = getDefaultStrategies(context, HandlerAdapter.class);
 			if (logger.isTraceEnabled()) {
@@ -900,12 +913,15 @@ public class DispatcherServlet extends FrameworkServlet {
 	@SuppressWarnings("unchecked")
 	protected <T> List<T> getDefaultStrategies(ApplicationContext context, Class<T> strategyInterface) {
 		String key = strategyInterface.getName();
+		//获取 HandlerMappings 为 key 的值， defaultStrategies 在 static 块中读取 DispatcherServlet.properties
 		String value = defaultStrategies.getProperty(key);
 		if (value != null) {
+			//逗号分隔为数组
 			String[] classNames = StringUtils.commaDelimitedListToStringArray(value);
 			List<T> strategies = new ArrayList<>(classNames.length);
 			for (String className : classNames) {
 				try {
+					//反射加载并且存储 strategies
 					Class<?> clazz = ClassUtils.forName(className, DispatcherServlet.class.getClassLoader());
 					Object strategy = createDefaultStrategy(context, clazz);
 					strategies.add((T) strategy);
@@ -937,6 +953,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * @see org.springframework.beans.factory.config.AutowireCapableBeanFactory#createBean
 	 */
 	protected Object createDefaultStrategy(ApplicationContext context, Class<?> clazz) {
+		//通过 容器创建 bean
 		return context.getAutowireCapableBeanFactory().createBean(clazz);
 	}
 
@@ -1295,7 +1312,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	protected HandlerAdapter getHandlerAdapter(Object handler) throws ServletException {
 		if (this.handlerAdapters != null) {
 			for (HandlerAdapter adapter : this.handlerAdapters) {
-				if (adapter.supports(handler)) {
+				if (adapter.supports(handler)) { //判断是否适配成功
 					return adapter;
 				}
 			}

@@ -74,7 +74,7 @@ public class GenericTypeAwareAutowireCandidateResolver extends SimpleAutowireCan
 	 * candidate bean definition.
 	 */
 	protected boolean checkGenericTypeMatch(BeanDefinitionHolder bdHolder, DependencyDescriptor descriptor) {
-		ResolvableType dependencyType = descriptor.getResolvableType();
+		ResolvableType dependencyType = descriptor.getResolvableType(); //获取范型的类型
 		if (dependencyType.getType() instanceof Class) {
 			// No generic type -> we know it's a Class type-match, so no need to check again.
 			return true;
@@ -136,6 +136,7 @@ public class GenericTypeAwareAutowireCandidateResolver extends SimpleAutowireCan
 			return true;
 		}
 		// Full check for complex generic type match...
+		// dependencyType 是范型的真实类型，targetType 是筛选出来的某个 bean 的类型
 		return dependencyType.isAssignableFrom(targetType);
 	}
 

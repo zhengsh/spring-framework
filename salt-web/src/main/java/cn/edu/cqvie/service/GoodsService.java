@@ -17,7 +17,7 @@ import javax.annotation.PreDestroy;
  * @author zhengsh
  * @date 2020-11-14
  */
-@Component
+//@Component
 public class GoodsService implements InitializingBean, ApplicationContextAware {
 
 	@Autowired
@@ -26,6 +26,13 @@ public class GoodsService implements InitializingBean, ApplicationContextAware {
 	@Autowired
 	@Value("${test.val}")
 	private String valStr;
+
+	@Value("#{stockService}")
+	private StockService stockService2;
+
+	public void close() {
+		System.out.println("close desptry");
+	}
 
 	public void test() {
 		System.out.println("goodsService.test invoker! ");

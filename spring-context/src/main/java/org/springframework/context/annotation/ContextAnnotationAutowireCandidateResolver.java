@@ -114,6 +114,7 @@ public class ContextAnnotationAutowireCandidateResolver extends QualifierAnnotat
 		if (dependencyType.isInterface()) {
 			pf.addInterface(dependencyType);
 		}
+		// 生成的代理对象
 		return pf.getProxy(beanFactory.getBeanClassLoader());
 	}
 

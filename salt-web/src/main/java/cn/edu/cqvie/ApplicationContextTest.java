@@ -19,5 +19,10 @@ public class ApplicationContextTest {
 		System.out.println(goodsService);
 
 		goodsService.test();
+
+		// bean 的关闭，手动销毁
+		applicationContext.close();
+
+		//applicationContext.registerShutdownHook(); // jvm -- hook
 	}
 }

@@ -1,5 +1,6 @@
 package cn.edu.cqvie.config;
 
+import cn.edu.cqvie.service.GoodsService;
 import cn.edu.cqvie.service.StockService;
 import org.springframework.context.annotation.*;
 
@@ -25,5 +26,9 @@ public class ApplicationConfig {
 		return "@Bean valStr";
 	}
 
+	@Bean
+	public GoodsService goodsService() {
+		return new GoodsService();
+	}
 
 }

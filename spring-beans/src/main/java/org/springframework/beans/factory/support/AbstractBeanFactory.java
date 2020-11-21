@@ -512,8 +512,12 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		String beanName = transformedBeanName(name);
 
 		// Check manually registered singletons.
+		// 检查手动添加到单例池中去取值
+		// 先更具beanName 去取值
 		Object beanInstance = getSingleton(beanName, false);
+		// 是不会 FactoryBean 的工厂名称
 		if (beanInstance != null && beanInstance.getClass() != NullBean.class) {
+			// 从单例池中取到了值
 			if (beanInstance instanceof FactoryBean) {
 				if (!BeanFactoryUtils.isFactoryDereference(name)) {
 					Class<?> type = getTypeForFactoryBean((FactoryBean<?>) beanInstance);
@@ -524,10 +528,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 			}
 			else if (!BeanFactoryUtils.isFactoryDereference(name)) {
+				// 如果 beanInstance 就是一个普通的bean
+				// 如果 beanInstance 是 typeToMatch 的一个实例，就可以是 typeToMatch 子类的一个实例
 				if (typeToMatch.isInstance(beanInstance)) {
 					// Direct match for exposed instance?
 					return true;
 				}
+				// 如果当前类型有范型
 				else if (typeToMatch.hasGenerics() && containsBeanDefinition(beanName)) {
 					// Generics potentially only match on the target class, not on the proxy...
 					RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
@@ -1721,6 +1728,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @see org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor
 	 */
 	protected boolean requiresDestruction(Object bean, RootBeanDefinition mbd) {
+		//判断某个 Bean 是否拥有销毁方法
+		//1. 实现了 DisposableBean 接口或者 AutoCloseable 接口
+		//2. BeanDefinition 中定义了 destroyMethodName
+		//3. 类中是否存在 @PreDestroy 注解
 		return (bean.getClass() != NullBean.class &&
 				(DisposableBeanAdapter.hasDestroyMethod(bean, mbd) || (hasDestructionAwareBeanPostProcessors() &&
 						DisposableBeanAdapter.hasApplicableProcessors(bean, getBeanPostProcessors()))));

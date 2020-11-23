@@ -1,5 +1,6 @@
 package cn.edu.cqvie.service;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,7 +10,8 @@ import org.springframework.stereotype.Component;
  * @date 2020-11-14
  */
 @Component
-public class StockService {
+@Order(2)
+public class StockService implements BaseService {
 
 	public void test() {
 		System.out.println("stockService.test invoker! ");

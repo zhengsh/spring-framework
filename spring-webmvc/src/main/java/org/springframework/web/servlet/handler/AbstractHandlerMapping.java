@@ -335,7 +335,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	//从上下文中加载 MappedInterceptor 类型的拦截器。比如我们正在配置中使用文件
 	//<mvc:interceptors></mvc:interceptors>
 	//标签拦截器
-	// 查找实现了MappedInterceptor接口的bean，并添加到映射拦截器列表
+	//查找实现了MappedInterceptor接口的bean，并添加到映射拦截器列表
 	protected void detectMappedInterceptors(List<HandlerInterceptor> mappedInterceptors) {
 		mappedInterceptors.addAll(
 				BeanFactoryUtils.beansOfTypeIncludingAncestors(

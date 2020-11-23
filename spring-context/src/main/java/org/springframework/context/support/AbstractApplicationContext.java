@@ -623,12 +623,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 
 		// Initialize any placeholder property sources in the context environment.
-		// 1. 初始化一些属性设置
+		// 1. 初始化一些属性设置， 允许子容器设置一些内容到 environment 中
 		initPropertySources();
 
 		// Validate that all properties marked as required are resolvable:
 		// see ConfigurablePropertyResolver#setRequiredProperties
+		// 可以通过 ApplicationContext 设置一些 Environment 中必须要有的属性
 		// 2. 属性校验校验属性的合法性
+		// applicationContext.getEnvironment().setRequiredProperties("test")
 		getEnvironment().validateRequiredProperties();
 
 		// Store pre-refresh ApplicationListeners...
@@ -685,7 +687,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// Configure the bean factory with context callbacks.
 		// 2. 添加部分的 BeanFactory 的 BeanPostProcessor [ApplicationContextAwareProcessor]
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
+
 		// 3. 设置忽略的自动装配的接口 EnvironmentAware 、EmbeddedValueResolverAware
+		// 如果实现了这些接口重写的 set 方法，那么 Spring 就不会去自动装配
 		beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
 		beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);
 		beanFactory.ignoreDependencyInterface(ResourceLoaderAware.class);
@@ -695,7 +699,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// BeanFactory interface not registered as resolvable type in a plain factory.
 		// MessageSource registered (and found for autowiring) as a bean.
-		// 4. 注册可以解析的自动装配，我们能够直接在任何组件中自动注入：BeanFactory、ResourceLoader、ApplicationEventPublisher、
+		// 4. 注册可以解析的自动装配，我们能够直接在任何组件中自动注入：
+		// BeanFactory、
+		// ResourceLoader、
+		// ApplicationEventPublisher、
 		// ApplicationContext
 		beanFactory.registerResolvableDependency(BeanFactory.class, beanFactory);
 		beanFactory.registerResolvableDependency(ResourceLoader.class, this);
@@ -888,6 +895,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// uninitialized to let post-processors apply to them!
 		// 2. 每个监听器添加到事件派发器中
 		// 			getApplicationEventMulticaster().addApplicationListenerBean(listenerBeanName);
+		// 到这一步因为 FactoryBean 还没有调用 getObject() 方法生成 Bean 对象， 所以这里要根据类型查找一下 ApplicationListener 记录对应类型
 		String[] listenerBeanNames = getBeanNamesForType(ApplicationListener.class, true, false);
 		for (String listenerBeanName : listenerBeanNames) {
 			getApplicationEventMulticaster().addApplicationListenerBean(listenerBeanName);

@@ -264,7 +264,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 */
 	//这个 controller 解析过程
 	protected void detectHandlerMethods(Object handler) {
-		//根据 name 查找出 bean 的累心
+		//根据 name 查找出 bean 的类型
 		Class<?> handlerType = (handler instanceof String ?
 				obtainApplicationContext().getType((String) handler) : handler.getClass());
 

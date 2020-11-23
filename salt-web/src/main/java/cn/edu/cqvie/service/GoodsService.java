@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -18,7 +19,8 @@ import javax.annotation.PreDestroy;
  * @date 2020-11-14
  */
 //@Component
-public class GoodsService implements InitializingBean, ApplicationContextAware {
+@Order(1)
+public class GoodsService implements BaseService, InitializingBean, ApplicationContextAware {
 
 	@Autowired
 	private StockService stockService;
@@ -26,6 +28,9 @@ public class GoodsService implements InitializingBean, ApplicationContextAware {
 	@Autowired
 	@Value("${test.val}")
 	private String valStr;
+
+	@Value("${123}")
+	private Integer intVal;
 
 	@Value("#{stockService}")
 	private StockService stockService2;

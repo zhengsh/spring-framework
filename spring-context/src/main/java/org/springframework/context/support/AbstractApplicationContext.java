@@ -628,9 +628,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// Validate that all properties marked as required are resolvable:
 		// see ConfigurablePropertyResolver#setRequiredProperties
-		// 可以通过 ApplicationContext 设置一些 Environment 中必须要有的属性
-		// 2. 属性校验校验属性的合法性
-		// applicationContext.getEnvironment().setRequiredProperties("test")
+		// 2. 校验必填属性是否有值
 		getEnvironment().validateRequiredProperties();
 
 		// Store pre-refresh ApplicationListeners...
@@ -688,7 +686,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// 2. 添加部分的 BeanFactory 的 BeanPostProcessor [ApplicationContextAwareProcessor]
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 
-		// 3. 设置忽略的自动装配的接口 EnvironmentAware 、EmbeddedValueResolverAware
+		// 3. 设置忽略的自动装配的接口
+		// EnvironmentAware 、EmbeddedValueResolverAware、ResourceLoaderAware、ApplicationEventPublisherAware、ApplicationContextAware
 		// 如果实现了这些接口重写的 set 方法，那么 Spring 就不会去自动装配
 		beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
 		beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);
@@ -700,10 +699,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// BeanFactory interface not registered as resolvable type in a plain factory.
 		// MessageSource registered (and found for autowiring) as a bean.
 		// 4. 注册可以解析的自动装配，我们能够直接在任何组件中自动注入：
-		// BeanFactory、
-		// ResourceLoader、
-		// ApplicationEventPublisher、
-		// ApplicationContext
+		// BeanFactory、ResourceLoader、ApplicationEventPublisher、ApplicationContext
 		beanFactory.registerResolvableDependency(BeanFactory.class, beanFactory);
 		beanFactory.registerResolvableDependency(ResourceLoader.class, this);
 		beanFactory.registerResolvableDependency(ApplicationEventPublisher.class, this);
@@ -722,7 +718,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 
 		// Register default environment beans.
-		// 7. 给 BeanFactory 中注册一些能用的组件：
+		// 7. 给 BeanFactory 中注册一些常用的组件：
 		// 		environment 【ConfigurableEnvironment】
 		//      systemProperties 【Map<String, Object>】
 		//		systemEnvironment【Map<String, Object>】

@@ -1,9 +1,7 @@
 package cn.edu.cqvie;
 
 import cn.edu.cqvie.service.UserService;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 
 public class DemoApplicationTest {
 
@@ -23,8 +21,12 @@ public class DemoApplicationTest {
 }
 
 @Configuration
-@Import(UserService.class)
+@ComponentScan("cn.edu.cqvie.service")
 class AppConfig {
 
+	@Bean
+	public UserService userService200() {
+		return new UserService();
+	}
 }
 

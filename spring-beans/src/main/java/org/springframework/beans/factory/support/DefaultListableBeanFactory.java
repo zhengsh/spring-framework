@@ -1200,30 +1200,30 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	@Override
 	@Nullable
-	public Object resolveDependency(DependencyDescriptor descriptor, @Nullable String requestingBeanName,
-									@Nullable Set<String> autowiredBeanNames, @Nullable TypeConverter typeConverter) throws BeansException {
-		// DependencyDescriptor 表示一个依赖，可以是一个属性字段，可能是一个构造方法参数，可能是一个 set 参数
-		// 根据 descriptor 去 BeanFactory 中找到 bean
-		descriptor.initParameterNameDiscovery(getParameterNameDiscoverer());
-		// 如果是 Optional
-		if (Optional.class == descriptor.getDependencyType()) {
-			return createOptionalDependency(descriptor, requestingBeanName);
-		} else if (ObjectFactory.class == descriptor.getDependencyType() ||
-				ObjectProvider.class == descriptor.getDependencyType()) {
-			return new DependencyObjectProvider(descriptor, requestingBeanName);
-		} else if (javaxInjectProviderClass == descriptor.getDependencyType()) {
-			return new Jsr330Factory().createDependencyProvider(descriptor, requestingBeanName);
-		} else {
-			// 在使用 @Autowired 注解时，也可以使用 @Lazy 注解，到时候注入的会是一个代理对象
-			Object result = getAutowireCandidateResolver().getLazyResolutionProxyIfNecessary(
-					descriptor, requestingBeanName);
-			if (result == null) {
-				// 通过解析 descriptor 找到 bean 对象
-				result = doResolveDependency(descriptor, requestingBeanName, autowiredBeanNames, typeConverter);
-			}
-			return result;
+public Object resolveDependency(DependencyDescriptor descriptor, @Nullable String requestingBeanName,
+								@Nullable Set<String> autowiredBeanNames, @Nullable TypeConverter typeConverter) throws BeansException {
+	// DependencyDescriptor 表示一个依赖，可以是一个属性字段，可能是一个构造方法参数，可能是一个 set 参数
+	// 根据 descriptor 去 BeanFactory 中找到 bean
+	descriptor.initParameterNameDiscovery(getParameterNameDiscoverer());
+	// 如果是 Optional
+	if (Optional.class == descriptor.getDependencyType()) {
+		return createOptionalDependency(descriptor, requestingBeanName);
+	} else if (ObjectFactory.class == descriptor.getDependencyType() ||
+			ObjectProvider.class == descriptor.getDependencyType()) {
+		return new DependencyObjectProvider(descriptor, requestingBeanName);
+	} else if (javaxInjectProviderClass == descriptor.getDependencyType()) {
+		return new Jsr330Factory().createDependencyProvider(descriptor, requestingBeanName);
+	} else {
+		// 在使用 @Autowired 注解时，也可以使用 @Lazy 注解，到时候注入的会是一个代理对象
+		Object result = getAutowireCandidateResolver().getLazyResolutionProxyIfNecessary(
+				descriptor, requestingBeanName);
+		if (result == null) {
+			// 通过解析 descriptor 找到 bean 对象
+			result = doResolveDependency(descriptor, requestingBeanName, autowiredBeanNames, typeConverter);
 		}
+		return result;
 	}
+}
 
 	/**
 	 * 根据属性去寻找 bean

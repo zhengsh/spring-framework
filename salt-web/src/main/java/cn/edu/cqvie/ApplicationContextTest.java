@@ -18,5 +18,8 @@ public class ApplicationContextTest {
 		GoodsService goodsService = applicationContext.getBean("goodsService", GoodsService.class);
 		System.out.println(goodsService);
 		goodsService.test();
+
+		//关闭 ioc 容器
+		applicationContext.close();
 	}
 }

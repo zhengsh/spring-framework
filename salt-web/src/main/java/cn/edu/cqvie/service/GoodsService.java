@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 /**
  * 测试 spring
  *
@@ -40,5 +43,21 @@ public class GoodsService {
 		System.out.println("goodsService.test invoker! ");
 		System.out.println("goodsService.test valStr! " + valStr);
 		stockService.test();
+	}
+
+	/**
+	 * 初始化方法
+	 */
+	@PostConstruct
+	public void init() {
+		System.out.println("int invoke!");
+	}
+
+	/**
+	 * 销毁方法方法
+	 */
+	@PreDestroy
+	public void destroy() {
+		System.out.println("destroy invoke!");
 	}
 }

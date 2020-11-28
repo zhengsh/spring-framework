@@ -123,6 +123,7 @@ abstract class ConfigurationClassUtils {
 		}
 
 		// It's a full or lite configuration candidate... Let's determine the order value, if any.
+		// 解析 @Order 注解中的信息以存入 BeanDefinition#attributes["org.springframework.context.annotation.ConfigurationClassPostProcessor.order"]
 		Integer order = getOrder(metadata);
 		if (order != null) {
 			beanDef.setAttribute(ORDER_ATTRIBUTE, order);

@@ -1,8 +1,9 @@
 package cn.edu.cqvie.config;
 
 import cn.edu.cqvie.service.GoodsService;
-import cn.edu.cqvie.service.StockService;
+import cn.edu.cqvie.service.CoalStockService;
 import org.springframework.context.annotation.*;
+import org.springframework.core.annotation.Order;
 
 /**
  * 测试 spring
@@ -11,19 +12,25 @@ import org.springframework.context.annotation.*;
  * @date 2020-11-14
  */
 @Configuration
-@ComponentScan({"cn.edu.cqvie.service", "cn.edu.cqvie.controller"})
+@ComponentScan({"cn.edu.cqvie.service"})
 @PropertySource(value = "classpath:/application.properties")
-//@Import(TestBeanPostProcessor.class)
 public class ApplicationConfig {
 
-	@Bean
-	public StockService stockService200() {
-		return new StockService();
-	}
+//	@Bean
+//	//@Primary
+//	@Order(-1)
+//	public CoalStockService stockService200() {
+//		return new CoalStockService();
+//	}
 
 	@Bean
 	public String valStr() {
 		return "@Bean valStr";
+	}
+
+	@Bean
+	public String valStr2() {
+		return "@Bean valStr2";
 	}
 
 	@Bean

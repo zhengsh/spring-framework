@@ -1,12 +1,9 @@
 package cn.edu.cqvie.service;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.core.annotation.Order;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -18,61 +15,49 @@ import javax.annotation.PreDestroy;
  * @author zhengsh
  * @date 2020-11-14
  */
-//@Component
-@Order(1)
-public class GoodsService implements BaseService, InitializingBean, ApplicationContextAware {
+@Component
+public class GoodsService {
 
+	@Qualifier("coalStockService")
 	@Autowired
-	private StockService stockService;
+	private IStockService stockService;
 
-	@Autowired
+	//@Lazy
+	//@Qualifier("valStr")
+	//@Autowired(required = true)
 	@Value("${test.val}")
 	private String valStr;
 
-	@Value("${123}")
-	private Integer intVal;
+	private IStockService stockService200;
 
-	@Value("#{stockService}")
-	private StockService stockService2;
+	//@Qualifier("stockService200")
+	//@Autowired
+	public void setStockService200(IStockService stockService200) {
+		this.stockService200 = stockService200;
+	}
 
-	public void close() {
-		System.out.println("close desptry");
+	public GoodsService() {
 	}
 
 	public void test() {
 		System.out.println("goodsService.test invoker! ");
 		System.out.println("goodsService.test valStr! " + valStr);
-
 		stockService.test();
 	}
 
+	/**
+	 * 初始化方法
+	 */
 	@PostConstruct
-	public void initXxx() {
-		System.out.println("初始化 xxx");
+	public void init() {
+		System.out.println("int invoke!");
 	}
 
+	/**
+	 * 销毁方法方法
+	 */
 	@PreDestroy
-	public void destroyXxx() {
-		System.out.println("销毁方法 xxx");
+	public void destroy() {
+		System.out.println("destroy invoke!");
 	}
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		System.out.println("初始化 。。。。。");
-	}
-
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		System.out.println("GoodsService ApplicationContextAware");
-	}
-
-	public StockService getStockService() {
-		return stockService;
-	}
-
-	public void setStockService(StockService stockService) {
-		System.out.println("GoodsService#setStockService invoke!");
-		this.stockService = stockService;
-	}
-
 }

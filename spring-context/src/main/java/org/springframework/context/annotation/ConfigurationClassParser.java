@@ -350,6 +350,7 @@ class ConfigurationClassParser {
 					candidates.add(memberClass);
 				}
 			}
+			//排序加载顺序
 			OrderComparator.sort(candidates);
 			for (SourceClass candidate : candidates) {
 				if (this.importStack.contains(configClass)) {

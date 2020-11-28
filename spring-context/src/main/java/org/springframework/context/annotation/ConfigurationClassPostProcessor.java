@@ -259,19 +259,28 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 * {@link Configuration} classes.
 	 */
 	public void processConfigBeanDefinitions(BeanDefinitionRegistry registry) {
+		// 定义 list 存放 application 提供的 bd
 		List<BeanDefinitionHolder> configCandidates = new ArrayList<>();
+		// 容器中去拿注册的所有的 bd 的名字
 		String[] candidateNames = registry.getBeanDefinitionNames();
 
+		// Full: 加了 @Configuration 的注解类回被 Spring 标记为 Full
+		// Lite: 其他的注解被标记为 Lite
+		// 遍历 beanName 拿出所有的 bd (BeanDefinition), 然后判断 bd 时候回包含了 @Configuration, @Bean
 		for (String beanName : candidateNames) {
+			// 根据 beanName 获取到具体的 BeanDefinition
 			BeanDefinition beanDef = registry.getBeanDefinition(beanName);
+			// 检查是否被处理过
+			// 如果 BeanDefinition 中的 configurationClass 属性为 full 或者 lite 则意味着被处理过了
 			if (ConfigurationClassUtils.isFullConfigurationClass(beanDef) ||
 					ConfigurationClassUtils.isLiteConfigurationClass(beanDef)) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Bean definition has already been processed as a configuration class: " + beanDef);
 				}
 			}
-			//检查 beanDef 是否是配置类
+			//检查 beanDef 是否是配置类 Configuration
 			else if (ConfigurationClassUtils.checkConfigurationClassCandidate(beanDef, this.metadataReaderFactory)) {
+				// BeanDefinitionHolder 可以看作是一个 BeanDefinition 的包装类
 				configCandidates.add(new BeanDefinitionHolder(beanDef, beanName));
 			}
 		}
@@ -282,6 +291,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		}
 
 		// Sort by previously determined @Order value, if applicable
+		// 通过 @Order 排序
 		configCandidates.sort((bd1, bd2) -> {
 			int i1 = ConfigurationClassUtils.getOrder(bd1.getBeanDefinition());
 			int i2 = ConfigurationClassUtils.getOrder(bd2.getBeanDefinition());

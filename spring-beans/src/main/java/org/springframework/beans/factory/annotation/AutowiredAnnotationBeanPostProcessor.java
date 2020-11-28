@@ -362,7 +362,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 	@Override
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
-		// InjectionMetadata 中保存了所有被 @Autowired 注解标注的属性/防范并且封装成了一个个 InjectedElements
+		// InjectionMetadata 中保存了所有被 @Autowired 注解标注的属性/方法并且封装成了一个个 InjectedElements
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, bean.getClass(), pvs);
 		try {
 			// 1. 按注入点进行注入

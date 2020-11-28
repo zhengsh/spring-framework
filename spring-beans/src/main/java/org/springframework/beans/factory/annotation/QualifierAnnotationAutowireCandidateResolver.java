@@ -378,6 +378,7 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 		if (annotationsToSearch.length > 0) {   // qualifier annotations have to be local
 			// 得到 @Value 注解上的属性
 			AnnotationAttributes attr = AnnotatedElementUtils.getMergedAnnotationAttributes(
+					// this.valueAnnotationType 默认为 Value.class 就是 @Value 注解
 					AnnotatedElementUtils.forAnnotations(annotationsToSearch), this.valueAnnotationType);
 			if (attr != null) {
 				// @Value 注解中所定义的值

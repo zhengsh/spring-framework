@@ -147,6 +147,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * Dependency interfaces to ignore on dependency check and autowire, as Set of
 	 * Class objects. By default, only the BeanFactory interface is ignored.
 	 */
+	// 如果一个属性对应的 set 方法在 ignoredDependencyInterfaces 中定义了， 则该属性不会被进行自动注入
 	private final Set<Class<?>> ignoredDependencyInterfaces = new HashSet<>();
 
 	/**
@@ -1623,7 +1624,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// 这里对类所有的属性进行过滤，确定那些属性需要进行自动装配
 		for (PropertyDescriptor pd : pds) {
 			// 属性有 set 方法，并且
-			// 没有通过 DependencyCheck 排除 并且
+			// 没有通过 DependencyCheck ```排除``` 并且
 			// 没有在 BeanDefinition 中给该属性赋值，并且
 			// 属性不是简单的数据类型
 			if (pd.getWriteMethod() != null && !isExcludedFromDependencyCheck(pd) && !pvs.contains(pd.getName()) &&
@@ -1681,6 +1682,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @see #ignoreDependencyType(Class)
 	 * @see #ignoreDependencyInterface(Class)
 	 */
+	// 判断 pd 属性是不是不需要进行自动装配，返回 true 表示不需要自动装配
 	protected boolean isExcludedFromDependencyCheck(PropertyDescriptor pd) {
 		return (AutowireUtils.isExcludedFromDependencyCheck(pd) ||
 				this.ignoredDependencyTypes.contains(pd.getPropertyType()) ||

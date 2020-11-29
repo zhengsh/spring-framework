@@ -3,7 +3,6 @@ package cn.edu.cqvie.service;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Priority;
 
 /**
  * 汽车库存

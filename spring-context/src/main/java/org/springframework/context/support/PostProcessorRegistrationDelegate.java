@@ -222,6 +222,7 @@ final class PostProcessorRegistrationDelegate {
 		List<String> orderedPostProcessorNames = new ArrayList<>();
 		List<String> nonOrderedPostProcessorNames = new ArrayList<>();
 		for (String ppName : postProcessorNames) {
+			// 1. 实现了接口 PriorityOrdered
 			if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {// PriorityOrdered @Order @Priority
 				BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
 				priorityOrderedPostProcessors.add(pp);
@@ -229,10 +230,12 @@ final class PostProcessorRegistrationDelegate {
 					internalPostProcessors.add(pp);
 				}
 			}
+			// 2. 实现了接口 Ordered
 			else if (beanFactory.isTypeMatch(ppName, Ordered.class)) {
 				orderedPostProcessorNames.add(ppName);
 			}
 			else {
+				// 3. 其他的
 				nonOrderedPostProcessorNames.add(ppName);
 			}
 		}

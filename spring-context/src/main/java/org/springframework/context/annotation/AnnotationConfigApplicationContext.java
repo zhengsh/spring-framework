@@ -63,7 +63,8 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * through {@link #register} calls and then manually {@linkplain #refresh refreshed}.
 	 */
 	public AnnotationConfigApplicationContext() {
-		// 在执行这个构造方法之前, 会先执行父类的构造方法, 会初始化一个 		this.beanFactory = new DefaultListableBeanFactory();
+		// 在执行这个构造方法之前, 会先执行父类的构造方法, 会初始化一个
+		// beanFactory = new DefaultListableBeanFactory();
 
 		//生成并且注册 5 个 BeanDefinition
 		//1.ConfigurationClassPostProcessor
@@ -71,10 +72,9 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 		//3.CommonAnnotationBeanPostProcessor
 		//4.EventListenerMethodProcessor
 		//5.DefaultEventListenerFactory
-
-		//创建一个读取注解的Bean定义读取器
 		this.reader = new AnnotatedBeanDefinitionReader(this);
-		//创建一个类扫描分析器
+
+		// 注册默认的 includeFilter
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}
 
@@ -99,6 +99,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 		// 2. 生成 AnnotatedBeanDefinitionReader
 		// 3. 生成 ClassPathBeanDefinitionScanner
      	this();
+
 		//this.reader.register(componentClasses);
 
 		// 利用 reader 把 componentClasses 注册成一个 BeanDefinition

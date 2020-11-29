@@ -24,6 +24,11 @@ public class ApplicationConfig {
 //	}
 
 	@Bean
+	public CoalStockService coalStockService() {
+		return new CoalStockService();
+	}
+
+	@Bean
 	public String valStr() {
 		return "@Bean valStr";
 	}

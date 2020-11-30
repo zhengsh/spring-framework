@@ -26,6 +26,6 @@ public class ApplicationContextTest {
 		goodsService.test();
 
 		//关闭 ioc 容器
-		application.close();
+		//application.close();
 	}
 }

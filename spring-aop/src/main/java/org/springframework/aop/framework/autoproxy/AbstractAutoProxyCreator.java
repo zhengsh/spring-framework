@@ -340,12 +340,14 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		}
 
 		// Create proxy if we have advice.
-		//如果
+		//如果匹配到 Advisors 不为 null, 那么进行代理并且返回代理对象
 		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);
-		if (specificInterceptors != DO_NOT_PROXY) {
+		if (specificInterceptors != DO_NOT_PROXY) { //需要动态代理
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
+			//基于 bean 对象和 advice 创建代理对象
 			Object proxy = createProxy(
 					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
+			//存一个代理对象的类型
 			this.proxyTypes.put(cacheKey, proxy.getClass());
 			return proxy;
 		}
@@ -444,20 +446,24 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		}
 
 		ProxyFactory proxyFactory = new ProxyFactory();
-		proxyFactory.copyFrom(this);
+		proxyFactory.copyFrom(this); //复制参数
 
+		// 是否执行了必须使用 gclib 代理
 		if (!proxyFactory.isProxyTargetClass()) {
+			// 如果过没有执行，那么则判断是不是应该 cglib 代理 （判断 beandefinition 中是否要使用 cglib）
 			if (shouldProxyTargetClass(beanClass, beanName)) {
 				proxyFactory.setProxyTargetClass(true);
 			}
 			else {
-				evaluateProxyInterfaces(beanClass, proxyFactory);
+				// 是否进行 jdk 动态代理， 如果当前 beanClass 实现了某个接口，那么则回使用 jdk 动态代理
+				evaluateProxyInterfaces(beanClass, proxyFactory); // 判断 beanclass 有没有实现接口
 			}
 		}
 
+		//将 commonInterceptors 和 specificInterceptors 整合在一起
 		Advisor[] advisors = buildAdvisors(beanName, specificInterceptors);
-		proxyFactory.addAdvisors(advisors);
-		proxyFactory.setTargetSource(targetSource);
+		proxyFactory.addAdvisors(advisors); // 向 proxyFactory 添加 advisors
+		proxyFactory.setTargetSource(targetSource); // 被代理对象
 		customizeProxyFactory(proxyFactory);
 
 		proxyFactory.setFrozen(this.freezeProxy);

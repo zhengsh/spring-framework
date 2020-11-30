@@ -129,6 +129,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	private ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
 
 	/** Whether to automatically try to resolve circular references between beans. */
+	/** 是否支持循环依赖, 默认支持 */
 	private boolean allowCircularReferences = true;
 
 	/**
@@ -587,7 +588,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					//		调用 MergedBeanDefinitionPostProcessor
 					//			bdp.postProcessMergedBeanDefinition(mbd, beanType, beanName);
 					// 运行修改合并好的 BeanDefinition
-					// 阵列会查找到 @Autowired 的注入点 (InjectedElement), 并把这些注入点添加到 mbd 的属性
+					// 这里会查找到 @Autowired 的注入点 (InjectedElement), 并把这些注入点添加到 mbd 的属性
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
 				catch (Throwable ex) {
@@ -600,7 +601,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Eagerly cache singletons to be able to resolve circular references
 		// even when triggered by lifecycle interfaces like BeanFactoryAware.
-		// 判断是否支持循环依赖，默认支持单例循环依赖可以设置关闭
+		// 循环依赖第一步，判断是否支持循环依赖，默认支持单例循环依赖可以设置关闭
 		boolean earlySingletonExposure = (mbd.isSingleton() && this.allowCircularReferences &&
 				isSingletonCurrentlyInCreation(beanName));
 		if (earlySingletonExposure) {
@@ -609,7 +610,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 						"' to allow for resolving potential circular references");
 			}
 			// 构造一个对象工厂的 singletonFactories 中
-			// 第四次调用后置处理器
+			// 循环依赖第二步，放入三级缓存中。
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
@@ -1471,6 +1472,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 					// 调用 BeanPostProcessor 分别解析 @Autowired、@Resource、@Value 为属性注入值
 					// 此处会从后置处理，从里面把依赖的属性，值都拿到。AutowiredAnnotationBeanPostProcessor就是在此处拿出值的~~~
+					// 循环依赖第三步，查找依赖的属性
 					PropertyValues pvsToUse = ibp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName);
 
 					if (pvsToUse == null) {

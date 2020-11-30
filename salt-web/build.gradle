@@ -40,6 +40,8 @@ dependencies {
     compile(project(":spring-context"))
     compile(project(":spring-webmvc"))
 
+    compile(project(":spring-aop"))
+
     // tomcat: 将Tomcat运行时库添加到配置tomcat中: (此处为Tomcat9)
     def tomcatVersion = '8.0.27'
     tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",

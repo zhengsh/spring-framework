@@ -8,4 +8,9 @@ public class B {
 
 	@Autowired
 	private A a;
+
+	public String test() {
+		System.out.println(a.test());
+		return "test b";
+	}
 }

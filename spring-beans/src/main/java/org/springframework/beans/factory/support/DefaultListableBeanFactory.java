@@ -1323,6 +1323,7 @@ public Object resolveDependency(DependencyDescriptor descriptor, @Nullable Strin
 			}
 			if (instanceCandidate instanceof Class) {
 				// 调用 beanFactory.getbean() 创建 bean 对象
+				// 循环依赖第四步，获取依赖的实例对象
 				instanceCandidate = descriptor.resolveCandidate(autowiredBeanName, type, this);
 			}
 			Object result = instanceCandidate;

@@ -82,6 +82,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	/** Cache of early singleton objects: bean name to bean instance. */
 	private final Map<String, Object> earlySingletonObjects = new HashMap<>(16);
 
+	/** 存放的是单例 beanName */
 	/** Set of registered singletons, containing the bean names in registration order. */
 	private final Set<String> registeredSingletons = new LinkedHashSet<>(256);
 
@@ -149,15 +150,17 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * <p>To be called for eager registration of singletons, e.g. to be able to
 	 * resolve circular references.
 	 * @param beanName the name of the bean
-	 * @param singletonFactory the factory for the singleton object
+	 * @param singletonFactory the factory for the singleton object <<BeanFactory 对象>>
 	 */
 	protected void addSingletonFactory(String beanName, ObjectFactory<?> singletonFactory) {
 		Assert.notNull(singletonFactory, "Singleton factory must not be null");
 		synchronized (this.singletonObjects) {
 			if (!this.singletonObjects.containsKey(beanName)) {
-				this.singletonFactories.put(beanName, singletonFactory);//一级缓存
-				this.earlySingletonObjects.remove(beanName);//二级缓存
-				this.registeredSingletons.add(beanName);//三级缓存
+				//三级缓存，缓存的是ObjectFactory，表示对象工厂，用来创建某个对象的。
+				this.singletonFactories.put(beanName, singletonFactory);
+				//二级缓存，缓存的是早期的bean对象。早期是什么意思？表示Bean的生命周期还没走完就把这个Bean放入了earlySingletonObjects。
+				this.earlySingletonObjects.remove(beanName);
+				this.registeredSingletons.add(beanName);
 			}
 		}
 	}
@@ -180,22 +183,20 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
 		// 单例池中获取是否存在
 		Object singletonObject = this.singletonObjects.get(beanName);
-
 		// 正在创建
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
 			synchronized (this.singletonObjects) {
-				// 三级缓存中获取
-				// earlySingletonObjects 的目的是什么
+				// 二级缓存 earlySingletonObjects 存放的有可能是经过AOP增强的代理对像
 				singletonObject = this.earlySingletonObjects.get(beanName);
 
 				if (singletonObject == null && allowEarlyReference) {
-					// singletonFactories 的目的是什么 ?
+					// 三级缓存 singletonFactories 用于 Bean 的早期暴露以解决循环依赖
 					ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 					if (singletonFactory != null) {
 						singletonObject = singletonFactory.getObject();
-						// 放到三级缓存中
+						// 放到二级缓存中
 						this.earlySingletonObjects.put(beanName, singletonObject);
-						// 从二级缓存中移除
+						// 从三级缓存中移除
 						this.singletonFactories.remove(beanName);
 					}
 				}
@@ -266,7 +267,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				}
 				if (newSingleton) {
 					// 5. 如果是新创建的 Bean ，将它添加到缓存  singletonObjects 中
-					//		ioc 容器就是这些 Map 保存了但实例Bean, 环境信息 。。。
+					// 这里完成单实例Bean的创建并且, 加入到一级缓存 singletonObjects 中
 					addSingleton(beanName, singletonObject);
 				}
 			}

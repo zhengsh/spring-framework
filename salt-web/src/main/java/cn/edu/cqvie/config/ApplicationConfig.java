@@ -15,7 +15,7 @@ import org.springframework.context.annotation.*;
  */
 @Configuration
 @EnableAspectJAutoProxy
-//@Import(LogAspect.class)
+@Import(LogAspect.class)
 @ComponentScan({"cn.edu.cqvie.service"})
 @PropertySource(value = "classpath:/application.properties")
 public class ApplicationConfig {
@@ -49,7 +49,7 @@ public class ApplicationConfig {
 
 
 	// 基于 Bean 的后置处理器
-	@Bean
+	//@Bean
 	public BeanNameAutoProxyCreator creator(){
 		BeanNameAutoProxyCreator beanNameAutoProxyCreator = new BeanNameAutoProxyCreator();
 		beanNameAutoProxyCreator.setBeanNames("userService");
@@ -59,7 +59,7 @@ public class ApplicationConfig {
 
 	// 定义了 Advisor 过后  DefaultAdvisorAutoProxyCreator
 	// 回自动去查找 BeanPostProcessor
-	@Bean
+	//@Bean
 	public DefaultAdvisorAutoProxyCreator creator1(){
 		DefaultAdvisorAutoProxyCreator creator
 				= new DefaultAdvisorAutoProxyCreator();

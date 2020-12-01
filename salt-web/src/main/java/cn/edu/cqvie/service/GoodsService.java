@@ -16,7 +16,7 @@ import javax.annotation.PreDestroy;
  * @date 2020-11-14
  */
 @Component
-public class GoodsService {
+public class GoodsService implements IGoodsService {
 
 	@Qualifier("coalStockService")
 	@Autowired
@@ -39,6 +39,7 @@ public class GoodsService {
 	public GoodsService() {
 	}
 
+	@Override
 	public void test() {
 		System.out.println("goodsService.test invoker! ");
 		System.out.println("goodsService.test valStr! " + valStr);

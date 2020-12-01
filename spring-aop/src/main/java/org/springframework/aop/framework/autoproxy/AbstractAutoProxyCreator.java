@@ -333,18 +333,18 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (Boolean.FALSE.equals(this.advisedBeans.get(cacheKey))) {
 			return bean;
 		}
-		//先判断当前的 bean 是不是要进行AOP，比如当前的Bean的类型是 Pointcut, Advice, Advisor 等那些就不需要 AOP
+		//1.先判断当前的 bean 是不是要进行AOP，比如当前的Bean的类型是 Pointcut, Advice, Advisor 等那些就不需要 AOP
 		if (isInfrastructureClass(bean.getClass()) || shouldSkip(bean.getClass(), beanName)) {
 			this.advisedBeans.put(cacheKey, Boolean.FALSE);
 			return bean;
 		}
 
 		// Create proxy if we have advice.
-		//如果匹配到 Advisors 不为 null, 那么进行代理并且返回代理对象
+		//2.如果匹配到 Advisors 不为 null, 那么进行代理并且返回代理对象
 		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);
 		if (specificInterceptors != DO_NOT_PROXY) { //需要动态代理
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
-			//基于 bean 对象和 advice 创建代理对象
+			//3. 基于 bean 对象和 advice 创建代理对象
 			Object proxy = createProxy(
 					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
 			//存一个代理对象的类型
@@ -471,7 +471,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			proxyFactory.setPreFiltered(true);
 		}
 
-		return proxyFactory.getProxy(getProxyClassLoader());
+		return proxyFactory.getProxy(getProxyClassLoader()); //获取代理对象
 	}
 
 	/**

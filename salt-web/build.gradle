@@ -36,6 +36,8 @@ dependencies {
 
     compile 'javax.annotation:javax.annotation-api:1.3.2'
     compile "org.aspectj:aspectjweaver:${aspectjVersion}"
+    compile 'commons-codec:commons-codec:1.13'
+
 
     compile(project(":spring-core"))
     compile(project(":spring-beans"))

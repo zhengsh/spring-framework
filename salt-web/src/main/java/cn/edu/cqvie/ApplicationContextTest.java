@@ -1,9 +1,9 @@
 package cn.edu.cqvie;
 
 import cn.edu.cqvie.config.ApplicationConfig;
-import cn.edu.cqvie.service.GoodsService;
+import cn.edu.cqvie.service.IGoodsService;
+import org.springframework.cglib.core.DebuggingClassWriter;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 /**
  * 测试 spring
@@ -13,6 +13,13 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
  */
 public class ApplicationContextTest {
 
+	static {
+		//该设置用于输出cglib动态代理产生的类
+		System.setProperty(DebuggingClassWriter.DEBUG_LOCATION_PROPERTY, "D:\\class");
+		//该设置用于输出jdk动态代理产生的类 默认在com/sun/proxy 目录下
+		System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
+	}
+
 	public static void main(String[] args) {
 
 		//AnnotationConfigApplicationContext application =new AnnotationConfigApplicationContext();
@@ -21,7 +28,7 @@ public class ApplicationContextTest {
 		//application.refresh();
 
 		AnnotationConfigApplicationContext application =new AnnotationConfigApplicationContext(ApplicationConfig.class);
-	    GoodsService goodsService = application.getBean("goodsService", GoodsService.class);
+		IGoodsService goodsService = application.getBean("goodsService", IGoodsService.class);
 		System.out.println(goodsService);
 		goodsService.test();
 

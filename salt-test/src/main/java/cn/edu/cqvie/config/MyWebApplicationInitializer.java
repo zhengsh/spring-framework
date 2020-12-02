@@ -10,21 +10,21 @@ import javax.servlet.ServletRegistration;
 
 public class MyWebApplicationInitializer implements WebApplicationInitializer {
 
-    @Override
-    public void onStartup(ServletContext servletContext) throws ServletException {
+	@Override
+	public void onStartup(ServletContext servletContext) throws ServletException {
 
-        // Load Spring web application configuration
-        AnnotationConfigWebApplicationContext context =
+		// Load Spring web application configuration
+		AnnotationConfigWebApplicationContext context =
 				new AnnotationConfigWebApplicationContext();
-        context.register(WebConfig.class);
+		context.register(WebConfig.class);
 		context.setServletContext(servletContext);
 		context.refresh();
 
-        // Create and register the DispatcherServlet
-        DispatcherServlet servlet = new DispatcherServlet(context);
-        ServletRegistration.Dynamic registration = servletContext.addServlet("app", servlet);
-        registration.setLoadOnStartup(1);
-        registration.addMapping("/");
-    }
+		// Create and register the DispatcherServlet
+		DispatcherServlet servlet = new DispatcherServlet(context);
+		ServletRegistration.Dynamic registration = servletContext.addServlet("app", servlet);
+		registration.setLoadOnStartup(1);
+		registration.addMapping("/");
+	}
 
 }

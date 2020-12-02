@@ -357,6 +357,10 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 				}
 			}
 		}
+		//要么返回一个 required = true 的构造方法
+		//要么返回一个 required = false 的构造方法
+		//要么返回一个唯一的有参的构造方法
+		//要么返回一个无参的构造方法，这里返回null, 外层会采用默认午餐构造方法进行实例化
 		return (candidateConstructors.length > 0 ? candidateConstructors : null);
 	}
 

@@ -6,7 +6,7 @@ import org.aspectj.lang.annotation.*;
 @Aspect
 public class LogAspect {
 
-	@Pointcut("execution(* cn.edu.cqvie.service.GoodsService.test(..))")
+	@Pointcut("execution(* cn.edu.cqvie.service.IGoodsService.test(..))")
 	public void serviceOperation() {}
 
 

@@ -2,6 +2,7 @@ package cn.edu.cqvie;
 
 import cn.edu.cqvie.config.ApplicationConfig;
 import cn.edu.cqvie.service.IGoodsService;
+import cn.edu.cqvie.service.UserService;
 import org.springframework.cglib.core.DebuggingClassWriter;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

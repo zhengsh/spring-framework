@@ -644,7 +644,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 			return this.aspectJAdviceMethod.invoke(this.aspectInstanceFactory.getAspectInstance(), actualArgs);
 		}
 		catch (IllegalArgumentException ex) {
-			throw new AopInvocationException("Mismatch on arguments to advice method [" +
+			throw new AopInvocationException("Mismatch on arguments t/o advice method [" +
 					this.aspectJAdviceMethod + "]; pointcut expression [" +
 					this.pointcut.getPointcutExpression() + "]", ex);
 		}

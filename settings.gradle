@@ -30,9 +30,5 @@ rootProject.children.each {project ->
 	project.buildFileName = "${project.name}.gradle"
 }
 
-include 'salt-ioc'
-include 'salt-tx'
-include 'salt-aop'
-include 'salt-mvc'
-include 'salt-web'
+include 'salt-test'
 

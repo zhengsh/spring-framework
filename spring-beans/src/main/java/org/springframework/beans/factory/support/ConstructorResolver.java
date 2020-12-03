@@ -238,9 +238,17 @@ class ConstructorResolver {
 					argsHolder = new ArgumentsHolder(explicitArgs);
 				}
 
+				// 执行到这里，表示当前构造方法可用， 并且也找了对应的构造方法参数值
+				// 但是还需要判断， 当前构造方法是不是最合适的， 也许还有另外的构造方法更加合适
+
+				// 根据参数类型和参数值计算权重
+				// Lenient 宽松， 默认宽松模式是开启的
+				// 在宽松模式下， 会判断每个参数值的类型和当前构造方法的参数类型的距离
+				// 在非宽松模式下，会忽略每个参数值的类型和当前构造方法的参数类型的距离，只要是父子关系距离都是一样的
 				int typeDiffWeight = (mbd.isLenientConstructorResolution() ?
 						argsHolder.getTypeDifferenceWeight(paramTypes) : argsHolder.getAssignabilityWeight(paramTypes));
 				// Choose this constructor if it represents the closest match.
+				// 如果当前构造方法的权重比较少，则表示当前构造方法更加合适，当前构造方法和所找到的参数值作为待使用的，遍历下一个构造方法
 				if (typeDiffWeight < minTypeDiffWeight) {
 					constructorToUse = candidate;
 					argsHolderToUse = argsHolder;
@@ -269,6 +277,8 @@ class ConstructorResolver {
 						"Could not resolve matching constructor " +
 						"(hint: specify index/type/name arguments for simple parameters to avoid type ambiguities)");
 			}
+			// 如果存在权重相同的构造方法并且不是宽松模式，也会报错，因为权重相同， Spring 不指导该使用哪一个
+			// 如果是宽松模式则不会报错，Spring 会找到的第一个
 			else if (ambiguousConstructors != null && !mbd.isLenientConstructorResolution()) {
 				throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 						"Ambiguous constructor matches found in bean '" + beanName + "' " +
@@ -276,6 +286,7 @@ class ConstructorResolver {
 						ambiguousConstructors);
 			}
 
+			// 如果不是通过 getBean 方法指定的参数，那么久包遭到的构造方法进行缓存
 			if (explicitArgs == null && argsHolderToUse != null) {
 				argsHolderToUse.storeCache(mbd, constructorToUse);
 			}

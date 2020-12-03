@@ -1184,8 +1184,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @see #autowireConstructor
 	 * @see #instantiateBean
 	 */
+	// 创建一个 bean 实例（返回原始对象）
 	protected BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd, @Nullable Object[] args) {
 		// Make sure bean class is actually resolved at this point.
+		//1. 得到 bean Class, 并且检查 class 的访问权限是否是 public
 		Class<?> beanClass = resolveBeanClass(mbd, beanName);
 
 		if (beanClass != null && !Modifier.isPublic(beanClass.getModifiers()) && !mbd.isNonPublicAccessAllowed()) {
@@ -1193,11 +1195,18 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					"Bean class isn't public, and non-public access not allowed: " + beanClass.getName());
 		}
 
+		//2. 这里是 spring 提供给开发者的拓展点
+		//如果我们自己要来实现创建对象的过程，那么就可以提供一个 Supplier 的实现类
+		//当一个 BeanDefinition 中存在一个 Supplier 实现类的时候， Spring 就回利用这个类的get方法来获取实例
+		//而不再走 Spring 创建对象的逻辑
 		Supplier<?> instanceSupplier = mbd.getInstanceSupplier();
 		if (instanceSupplier != null) {
 			return obtainFromSupplier(instanceSupplier, beanName);
 		}
 
+		//3. 通过 FactoryMethod 实例化这个 bean
+		// FactoryMethod 这个名称在 xml 中还是比较常见，即通过工厂方法来创建 bean 对象
+		// 如果一个 bean 对象是由 @Bean 注解创建的，那么该对象就会走一个 instantiateUsingFactoryMethod 的方法来创建的
 		if (mbd.getFactoryMethodName() != null) {
 			// 利用工厂方法或者对象的构造器获取Bean实例
 			return instantiateUsingFactoryMethod(beanName, mbd, args);
@@ -1224,9 +1233,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// Candidate constructors for autowiring?
+		// 通过 BeanPostProcessor 找出构造方法
+		// 或者 BeanDefinition 的 autowire 属性为 AUTOWIRE_CONSTRUCTOR
+		// 或者 BeanDefinition 中指定了构造方法参数值
+		// 或者 getBean() 时指定了 args
 		Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
 		if (ctors != null || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR ||
 				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) {
+			// 进行构造方法推断并且实例化
 			return autowireConstructor(beanName, mbd, ctors, args);
 		}
 

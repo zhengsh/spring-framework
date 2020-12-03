@@ -30,13 +30,12 @@ public class ApplicationContextTest {
 		//application.refresh();
 
 		AnnotationConfigApplicationContext application =new AnnotationConfigApplicationContext(ApplicationConfig.class);
-		IGoodsService goodsService = application.getBean("goodsService", IGoodsService.class);
-
+		//IGoodsService goodsService = application.getBean("goodsService", IGoodsService.class);
 		//System.out.println(goodsService);
 		//goodsService.test();
 
 		// 场景2. BeanFactory 数据操作
-		UserMapper userMapper = application.getBean("userMapper", UserMapper.class);
+		UserMapper userMapper = application.getBean(UserMapper.class);
 		userMapper.insert(new User());
 
 		//关闭 ioc 容器

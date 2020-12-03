@@ -892,8 +892,6 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 					}
 				} else {
 					// 2.  不是工厂Bean， 就通过 getBean 来创建 Bean 实例
-					//			0. getBean(beanName); ==> ioc.getBean();
-					//			1. doGetBean(name, null, null, false);
 					getBean(beanName);
 				}
 			}

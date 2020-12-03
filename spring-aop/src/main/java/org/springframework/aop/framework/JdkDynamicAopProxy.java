@@ -122,7 +122,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 		// 获取代理对象所需要的实现接口的集合
 		// 同时把SpringProxy、Advised、DecoratingProxy这几个接口也添加到结果集合中去
 		Class<?>[] proxiedInterfaces = AopProxyUtils.completeProxiedInterfaces(this.advised, true);
-		logger.info("代理对象需要实现的接口: " + Arrays.toString(proxiedInterfaces));
+		//logger.info("代理对象需要实现的接口: " + Arrays.toString(proxiedInterfaces));
 		findDefinedEqualsAndHashCodeMethods(proxiedInterfaces);
 		// 生成一个代理对象
 		return Proxy.newProxyInstance(classLoader, proxiedInterfaces, this);

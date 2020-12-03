@@ -1,5 +1,6 @@
 package cn.edu.cqvie.config;
 
+import cn.edu.cqvie.aspect.Log1Aspect;
 import cn.edu.cqvie.aspect.LogAspect;
 import cn.edu.cqvie.service.GoodsService;
 import cn.edu.cqvie.service.CoalStockService;
@@ -15,8 +16,8 @@ import org.springframework.context.annotation.*;
  */
 @Configuration
 @EnableAspectJAutoProxy
-@Import(LogAspect.class)
-@ComponentScan({"cn.edu.cqvie.service"})
+@Import({LogAspect.class, Log1Aspect.class})
+@ComponentScan({"cn.edu.cqvie.service",})
 @PropertySource(value = "classpath:/application.properties")
 public class ApplicationConfig {
 
@@ -49,8 +50,8 @@ public class ApplicationConfig {
 
 
 	// 基于 Bean 的后置处理器
-	@Bean
-	public BeanNameAutoProxyCreator creator(){
+	// @Bean
+	public BeanNameAutoProxyCreator creator() {
 		BeanNameAutoProxyCreator beanNameAutoProxyCreator = new BeanNameAutoProxyCreator();
 		beanNameAutoProxyCreator.setBeanNames("userService");
 		beanNameAutoProxyCreator.setInterceptorNames("myAdvisor");
@@ -59,8 +60,8 @@ public class ApplicationConfig {
 
 	// 定义了 Advisor 过后  DefaultAdvisorAutoProxyCreator
 	// 回自动去查找 BeanPostProcessor
-	@Bean
-	public DefaultAdvisorAutoProxyCreator creator1(){
+	// @Bean
+	public DefaultAdvisorAutoProxyCreator creator1() {
 		DefaultAdvisorAutoProxyCreator creator
 				= new DefaultAdvisorAutoProxyCreator();
 		return creator;

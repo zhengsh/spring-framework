@@ -20,6 +20,7 @@ public class LogAspect {
 		System.out.println("doReleaseLock .....");
 	}
 
+
 //	@AfterReturning(
 //			pointcut="cn.edu.cqvie.aspect.LogAspect.serviceOperation()",
 //			returning="retVal")

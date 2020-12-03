@@ -1,4 +1,4 @@
 package cn.edu.cqvie.service;
 
-public interface BaseService {
+public interface IBaseService {
 }

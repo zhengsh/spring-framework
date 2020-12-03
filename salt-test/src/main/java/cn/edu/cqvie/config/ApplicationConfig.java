@@ -1,12 +1,12 @@
 package cn.edu.cqvie.config;
 
-import cn.edu.cqvie.aspect.Log1Aspect;
 import cn.edu.cqvie.aspect.LogAspect;
 import cn.edu.cqvie.service.GoodsService;
 import cn.edu.cqvie.service.CoalStockService;
 import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.*;
+import org.springframework.core.annotation.Order;
 
 /**
  * 测试 spring
@@ -16,17 +16,17 @@ import org.springframework.context.annotation.*;
  */
 @Configuration
 @EnableAspectJAutoProxy
-@Import({LogAspect.class, Log1Aspect.class})
-@ComponentScan({"cn.edu.cqvie.service",})
-@PropertySource(value = "classpath:/application.properties")
+@Import({LogAspect.class, MyBatisConfig.class})
+@ComponentScan({"cn.edu.cqvie.service", "cn.edu.cqvie.mapper"})
+@PropertySource(value = "classpath:/config.properties")
 public class ApplicationConfig {
 
-//	@Bean
-//	//@Primary
-//	@Order(-1)
-//	public CoalStockService stockService200() {
-//		return new CoalStockService();
-//	}
+	// @Bean
+	// @Primary
+	// @Order(-1)
+	public CoalStockService stockService200() {
+		return new CoalStockService();
+	}
 
 	@Bean
 	public CoalStockService coalStockService() {

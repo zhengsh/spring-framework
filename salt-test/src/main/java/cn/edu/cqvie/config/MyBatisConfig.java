@@ -1,21 +1,36 @@
-package cn.edu.cqvie.tx.config;
+package cn.edu.cqvie.config;
 
 import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
+import javax.sql.DataSource;
+
+
 /**
- * 数据源信息配置
+ * MyBatis 配置信息
  *
  * @author zhengsh
- * @date 2020-11-13
  */
 @Configuration
-@MapperScan(basePackages = "cn.edu.cqvie.tx.mapper")
-public class DataSourceConfig {
+public class MyBatisConfig {
+
+	/**
+	 * Session 工厂配置
+	 *
+	 * @param dataSource 数据源
+	 * @return Session 工厂
+	 * @throws Exception 异常信息
+	 */
+	@Bean
+	public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+		factoryBean.setDataSource(dataSource);
+		return factoryBean.getObject();
+	}
 
 	/**
 	 * 数据源配置
@@ -23,13 +38,13 @@ public class DataSourceConfig {
 	 * @return 数据源
 	 */
 	@Bean
-	public BasicDataSource dataSource() {
+	public DataSource dataSource() {
 		BasicDataSource dataSource = new BasicDataSource();
 		dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 		dataSource.setUrl("jdbc:mysql://127.0.0.1:3306/slat-tx?useSSL=false&characterEncoding=UTF-8&useUnicode=true&serverTimezone=Asia/Shanghai");
 		dataSource.setUsername("root");
-		//dataSource.setPassword("zhh359#");
-		dataSource.setPassword("root123");
+		dataSource.setPassword("zhh359#");
+		//dataSource.setPassword("root123");
 		dataSource.setInitialSize(5);
 		dataSource.setMaxActive(10);
 		return dataSource;
@@ -43,17 +58,5 @@ public class DataSourceConfig {
 	@Bean
 	public DataSourceTransactionManager transactionManager() {
 		return new DataSourceTransactionManager(dataSource());
-	}
-
-	/**
-	 * SqlSession 工厂
-	 *
-	 * @return SqlSessionFactoryBean
-	 */
-	@Bean
-	public SqlSessionFactoryBean sqlSessionFactory() {
-		SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
-		sessionFactory.setDataSource(dataSource());
-		return sessionFactory;
 	}
 }

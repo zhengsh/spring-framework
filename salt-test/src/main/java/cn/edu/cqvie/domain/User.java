@@ -1,5 +1,7 @@
 package cn.edu.cqvie.domain;
 
+import com.sun.javafx.beans.IDProperty;
+
 /**
  * 用户信息
  *

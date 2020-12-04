@@ -3,6 +3,8 @@ package cn.edu.cqvie.config;
 import cn.edu.cqvie.aspect.LogAspect;
 import cn.edu.cqvie.service.GoodsService;
 import cn.edu.cqvie.service.CoalStockService;
+import org.apache.ibatis.annotations.Mapper;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.*;
@@ -18,7 +20,8 @@ import org.springframework.core.annotation.Order;
 @EnableAspectJAutoProxy
 @Import({LogAspect.class, MyBatisConfig.class})
 @ComponentScan({"cn.edu.cqvie.service", "cn.edu.cqvie.mapper"})
-@PropertySource(value = "classpath:/config.properties")
+@MapperScan(value = "cn.edu.cqvie.mapper", annotationClass = Mapper.class)
+//@PropertySource(value = "classpath:/config.properties")
 public class ApplicationConfig {
 
 	// @Bean

@@ -14,14 +14,14 @@ import java.lang.reflect.Proxy;
  * @author zhengsh
  * @date 2020-12-3
  */
-@Component
+//@Component
 public class MapperFactoryBean implements FactoryBean<UserMapper> {
 
 	private Class<?> clazz = UserMapper.class;
 
 	@Override
 	public UserMapper getObject() throws Exception {
-		return (UserMapper) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{this.clazz}, (proxy, method, args) -> {
+		return (UserMapper) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class<?>[]{this.clazz}, (proxy, method, args) -> {
 			System.out.println("MapperFactoryBean getObject invoke ! ");
 			return null;
 		});

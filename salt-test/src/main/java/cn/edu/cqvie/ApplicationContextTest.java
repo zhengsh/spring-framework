@@ -4,7 +4,9 @@ import cn.edu.cqvie.config.ApplicationConfig;
 import cn.edu.cqvie.domain.User;
 import cn.edu.cqvie.mapper.UserMapper;
 import cn.edu.cqvie.service.A;
+import cn.edu.cqvie.service.AFactoryBean;
 import cn.edu.cqvie.service.IGoodsService;
+import cn.edu.cqvie.service.UserService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -36,16 +38,18 @@ public class ApplicationContextTest {
 //		goodsService.test();
 
 		// 场景2. BeanFactory 数据操作
-//		UserMapper userMapper = application.getBean(UserMapper.class);
-//		User user = new User();
-//		user.setName(String.valueOf(System.currentTimeMillis()));
-//		user.setAge(18);
-//		userMapper.insert(user);
-//		System.out.println(user);
+		UserService userService = application.getBean(UserService.class);
+		User user = new User();
+		user.setName(String.valueOf(System.currentTimeMillis()));
+		user.setAge(18);
+		userService.insert(user);
+		System.out.println(user);
 
 
 		// 场景3. FactoryBean 循环依赖
-		A a = application.getBean("a", A.class);
+//		A a = application.getBean("a", A.class);
+//		AFactoryBean aFactoryBean = application.getBean("&a", AFactoryBean.class);
+
 
 		//关闭 ioc 容器
 		//application.close();

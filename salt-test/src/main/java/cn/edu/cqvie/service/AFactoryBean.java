@@ -8,8 +8,11 @@ import org.springframework.stereotype.Component;
 /**
  * @author zhengsh
  */
-@Component
+@Component(value = "a")
 public class AFactoryBean implements FactoryBean<A> {
+
+	@Autowired
+	private B b;
 
 	@Autowired
 	private BFactoryBean bFactoryBean;

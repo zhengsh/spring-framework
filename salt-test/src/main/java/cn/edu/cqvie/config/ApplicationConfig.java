@@ -9,6 +9,7 @@ import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.*;
 import org.springframework.core.annotation.Order;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * 测试 spring
@@ -17,6 +18,7 @@ import org.springframework.core.annotation.Order;
  * @date 2020-11-14
  */
 @Configuration
+@EnableTransactionManagement
 @EnableAspectJAutoProxy
 @Import({LogAspect.class, MyBatisConfig.class})
 @ComponentScan({"cn.edu.cqvie.service", "cn.edu.cqvie.mapper"})

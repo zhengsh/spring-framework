@@ -20,6 +20,11 @@ public class UserService {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
+	public void insert(User user) {
+		userMapper.insert(user);
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
 	public void test1() {
 		User user = new User();
 		user.setAge(10);

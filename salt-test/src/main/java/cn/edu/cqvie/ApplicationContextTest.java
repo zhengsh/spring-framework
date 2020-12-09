@@ -4,6 +4,7 @@ import cn.edu.cqvie.config.ApplicationConfig;
 import cn.edu.cqvie.domain.User;
 import cn.edu.cqvie.mapper.UserMapper;
 import cn.edu.cqvie.service.IGoodsService;
+import cn.edu.cqvie.service.UserService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -35,8 +36,12 @@ public class ApplicationContextTest {
 		//goodsService.test();
 
 		// 场景2. BeanFactory 数据操作
-		UserMapper userMapper = application.getBean(UserMapper.class);
-		userMapper.insert(new User());
+		//UserMapper userMapper = application.getBean(UserMapper.class);
+		//userMapper.insert(new User());
+
+		// 场景3. 事务管理器
+		UserService userService = application.getBean(UserService.class);
+		userService.test1();
 
 		//关闭 ioc 容器
 		//application.close();

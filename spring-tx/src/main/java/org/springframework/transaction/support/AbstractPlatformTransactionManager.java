@@ -349,9 +349,11 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			definition = new DefaultTransactionDefinition();
 		}
 
-		if (isExistingTransaction(transaction)) {  //如果已经存在一个数据库链接说明存在一个事务
+		//如果已经存在一个数据库链接说明存在一个事务
+		if (isExistingTransaction(transaction)) {
 			// Existing transaction found -> check propagation behavior to find out how to behave.
-			return handleExistingTransaction(definition, transaction, debugEnabled); //存在事务的情况下，按照不同的传播级别进行处理
+			//存在事务的情况下，按照不同的传播级别进行处理
+			return handleExistingTransaction(definition, transaction, debugEnabled);
 		}
 
 		// Check definition settings for new transaction.
